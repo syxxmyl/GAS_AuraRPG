@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffectTypes.h"
 #include "AuraEffectActor.generated.h"
 
 
 class UGameplayEffect;
+class UAbilitySystemComponent;
 
 
 UENUM(BlueprintType)
@@ -73,7 +75,5 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnEndOverlap(AActor* TargetActor);
 
-private:
-	UPROPERTY(EditAnywhere)
-	float Amount = 25.0f;
+	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 };
