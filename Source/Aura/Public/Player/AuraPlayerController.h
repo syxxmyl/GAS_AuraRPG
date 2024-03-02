@@ -40,9 +40,6 @@ private:
 
 	void CursorTrace();
 
-	UPROPERTY()
-	TObjectPtr<IEnemyInterface> LastActor;
-
-	UPROPERTY()
-	TObjectPtr<IEnemyInterface> ThisActor;
+	IEnemyInterface* LastActor;
+	IEnemyInterface* ThisActor;
 };
