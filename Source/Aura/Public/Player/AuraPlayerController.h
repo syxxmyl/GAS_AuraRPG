@@ -14,6 +14,7 @@ struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
+class USplineComponent;
 
 
 /**
@@ -58,4 +59,17 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	FVector CachedDestination = FVector::ZeroVector;
+	float FollowTime = 0.0f;
+	float ShortPressThreshold = 0.5;
+	bool bAutoRunning = false;
+	bool bTargeting = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.0f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> Spline;
+
 };
