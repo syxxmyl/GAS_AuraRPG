@@ -13,6 +13,7 @@ class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
+class UAuraAbilitySystemComponent;
 
 
 /**
@@ -51,4 +52,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
+
+
+	UAuraAbilitySystemComponent* GetASC();
+
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 };
