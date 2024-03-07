@@ -35,6 +35,8 @@ void UTargetDataUnderMouse::Activate()
 
 void UTargetDataUnderMouse::SendMouseCursorData()
 {
+	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
+
 	if (APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get())
 	{
 		FHitResult CursorHit;
@@ -45,8 +47,6 @@ void UTargetDataUnderMouse::SendMouseCursorData()
 
 			FGameplayAbilityTargetDataHandle DataHandle;
 			DataHandle.Add(Data);
-			
-			FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
 
 			AbilitySystemComponent->ServerSetReplicatedTargetData(
 				GetAbilitySpecHandle(), 
