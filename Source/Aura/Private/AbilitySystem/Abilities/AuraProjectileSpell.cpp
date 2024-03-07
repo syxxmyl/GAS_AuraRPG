@@ -10,7 +10,11 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (!HasAuthority(&ActivationInfo))
+}
+
+void UAuraProjectileSpell::SpawnProjectile()
+{
+	if (!GetAvatarActorFromActorInfo()->HasAuthority())
 	{
 		return;
 	}
@@ -29,7 +33,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn
-		);
+			);
 
 		// TODO: Give the Projectile a Gameplay Effect Spec for causing damage.
 		Projectile->FinishSpawning(SpawnTransform);
