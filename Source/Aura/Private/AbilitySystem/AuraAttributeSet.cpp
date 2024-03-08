@@ -80,19 +80,20 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	FEffectProperties Props;
+	SetEffectProperties(Data, Props);
+
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		// UE_LOG(LogTemp, Warning, TEXT("Health from GetHealth(): %f"), GetHealth());
 		// UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
+		UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	}
-
-	FEffectProperties Props;
-	SetEffectProperties(Data, Props);
 }
 
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
