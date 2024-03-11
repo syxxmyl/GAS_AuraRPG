@@ -33,7 +33,8 @@ void AAuraEnemy::BeginPlay()
 
 	InitAbilityActorInfo();
 	SetupHealthProgressBar();
-
+	BindHitReactEffectChangedDelegate();
+	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
 }
 
@@ -53,7 +54,6 @@ void AAuraEnemy::SetupHealthProgressBar()
 {
 	SetupHealthProgressBarWidgetController();
 	BindHealthProgressBarDelegates();	
-	BindHitReactEffectChangedDelegate();
 }
 
 void AAuraEnemy::SetupHealthProgressBarWidgetController()

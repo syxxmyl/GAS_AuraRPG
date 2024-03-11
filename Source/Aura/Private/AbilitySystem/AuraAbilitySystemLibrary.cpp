@@ -70,3 +70,18 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 		}
 	}
 }
+
+void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		if (UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo)
+		{
+			for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
+			{
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+				ASC->GiveAbility(AbilitySpec);
+			}
+		}
+	}
+}
