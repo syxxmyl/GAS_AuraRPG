@@ -27,8 +27,8 @@ public:
 
 protected:
 	UPROPERTY()
-		bool bIsBlockedHit = false;
+	bool bIsBlockedHit = false;
 
 	UPROPERTY()
-		bool bIsCriticalHit = false;
+	bool bIsCriticalHit = false;
 };
