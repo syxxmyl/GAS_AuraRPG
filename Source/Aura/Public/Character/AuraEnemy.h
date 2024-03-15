@@ -11,6 +11,8 @@
 
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AAuraAIController;
 
 
 /**
@@ -26,6 +28,7 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	virtual int32 GetPlayerLevel() override;
+	virtual void PossessedBy(AController* NewController) override;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlighted = false;
@@ -68,4 +71,10 @@ private:
 	void SetupHealthProgressBarWidgetController();
 	void BindHealthProgressBarDelegates();
 	void BindHitReactEffectChangedDelegate();
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AAuraAIController> AuraAIController;
 };
