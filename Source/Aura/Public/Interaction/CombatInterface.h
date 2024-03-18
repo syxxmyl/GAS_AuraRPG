@@ -36,4 +36,10 @@ public:
 	UAnimMontage* GetHitReactMontage();
 
 	virtual void Die() = 0;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget() const;
 };
