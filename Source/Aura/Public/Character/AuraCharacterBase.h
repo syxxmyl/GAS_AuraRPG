@@ -36,6 +36,7 @@ public:
 	virtual FVector GetCombatSocketLocation_Implementation() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatarActor_Implementation() override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -88,6 +89,9 @@ protected:
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
 	bool bDead = false;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TArray<FTaggedMontage> AttackMontages;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Abilities")
