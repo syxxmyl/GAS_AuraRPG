@@ -44,7 +44,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	bool bHitReacting = false;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	float BaseWalkSpeed = 250.0f;
 
 	virtual void Die() override;
