@@ -21,9 +21,19 @@ protected:
 	TSubclassOf<AActor> SpawnActorClass;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	float IntervalTimeSecond = 10.0f;
+	float IntervalSpawnTimeSecond = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	int32 MaxSpawnAliveCount = 10;
+
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	float IntervalCheckCountTimeSecond = 1.0f;
 
 	FTimerHandle SpawnTimerHandle;
+	FTimerHandle RefreshCountTimerHandle;
 
 	void SpawnActor();
+	void RefreshAlive();
+
+	TArray<AActor*> AliveActors;
 };
