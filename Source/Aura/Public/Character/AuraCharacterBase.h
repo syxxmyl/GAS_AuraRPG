@@ -17,6 +17,9 @@ class UAnimMontage;
 class USoundBase;
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeadSignature, AActor*, DeadCharacter);
+
+
 UCLASS()
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -42,6 +45,9 @@ public:
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	virtual int32 GetMinionCount_Implementation() override;
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
+
+
+	FOnCharacterDeadSignature CharacterDeadDelegate;
 
 protected:
 	virtual void BeginPlay() override;

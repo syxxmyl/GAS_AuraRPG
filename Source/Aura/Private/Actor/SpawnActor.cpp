@@ -3,6 +3,8 @@
 
 #include "Actor/SpawnActor.h"
 #include "Interaction/CombatInterface.h"
+#include "Character/AuraCharacterBase.h"
+// #include "Kismet/KismetSystemLibrary.h"
 
 
 ASpawnActor::ASpawnActor()
@@ -15,12 +17,26 @@ ASpawnActor::ASpawnActor()
 void ASpawnActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	InitializeData();
 	if (HasAuthority())
 	{
 		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ASpawnActor::SpawnActor, IntervalSpawnTimeSecond, true);
-		GetWorldTimerManager().SetTimer(RefreshCountTimerHandle, this, &ASpawnActor::RefreshAlive, IntervalCheckCountTimeSecond, true);
 	}
+}
+
+void ASpawnActor::InitializeData()
+{
+	for (auto& Pair : SpawnActorClassAndWeight)
+	{
+		TotalSpawnWeight += Pair.Value;
+	}
+
+	SpawnActorClassAndWeight.ValueSort(
+		[](float A, float B)
+		{
+			return A < B;
+		}
+	);	
 }
 
 void ASpawnActor::SpawnActor()
@@ -30,31 +46,77 @@ void ASpawnActor::SpawnActor()
 		return;
 	}
 
-	if (AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnActorClass, GetActorLocation(), GetActorRotation()))
+	TSubclassOf<AActor> SpawnActorClass = GetRandomSpawnActor();
+	if (!SpawnActorClass)
 	{
-		AliveActors.AddUnique(SpawnActor);
+		return;
 	}
+
+	FVector LookAtLocation = this->GetActorForwardVector();
+	FVector LeftOfSpread = LookAtLocation.RotateAngleAxis(SpawnSpread / 2.0f, FVector::UpVector);
+	FVector RightOfSpread = LookAtLocation.RotateAngleAxis(-SpawnSpread / 2.0f, FVector::UpVector);
+	FVector StartupRotation = LeftOfSpread.RotateAngleAxis(-FMath::FRandRange(0.0f, SpawnSpread), FVector::UpVector);
+	FVector FVectorStartupLocation = GetActorLocation() + StartupRotation * FMath::RandRange(MinSpawnDistance, MaxSpawnDistance);
+
+	FHitResult Hit;
+	GetWorld()->LineTraceSingleByChannel(
+		Hit,
+		FVectorStartupLocation + FVector(0.0f, 0.0f, 500.0f),
+		FVectorStartupLocation + FVector(0.0f, 0.0f, -500.0f),
+		ECC_Visibility
+	);
+
+	if (Hit.bBlockingHit)
+	{
+		FVectorStartupLocation = Hit.ImpactPoint;
+	}
+
+	/*
+	DrawDebugSphere(GetWorld(), FVectorStartupLocation, 18.0f, 12.0f, FColor::Cyan, false, 3.0f);
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + StartupRotation * MaxSpawnDistance, 4.0f, FLinearColor::Green, 3.0f);
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + LeftOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Blue, 3.0f);
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + RightOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Blue, 3.0f);
+	*/
+
+	AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnActorClass, FVectorStartupLocation, GetActorRotation());
+	if (!SpawnActor)
+	{
+		return;
+	}
+	
+	if (AAuraCharacterBase* AuraCharacter = Cast<AAuraCharacterBase>(SpawnActor))
+	{
+		AuraCharacter->CharacterDeadDelegate.AddDynamic(this, &ASpawnActor::OnActorDestroyed);
+	}
+	else
+	{
+		SpawnActor->OnDestroyed.AddDynamic(this, &ASpawnActor::OnActorDestroyed);
+	}
+
+	AliveActors.AddUnique(SpawnActor);
+	
 }
 
-void ASpawnActor::RefreshAlive()
+void ASpawnActor::OnActorDestroyed(AActor* DestroyedActor)
 {
-	TArray<AActor*> RemoveActors;
-	for (AActor* SpawnActor : AliveActors)
-	{
-		if (!IsValid(SpawnActor))
-		{
-			RemoveActors.AddUnique(SpawnActor);
-			continue;
-		}
+	AliveActors.Remove(DestroyedActor);
+	// UE_LOG(LogTemp, Warning, TEXT("remain %d alive."), AliveActors.Num());
+}
 
-		if (ICombatInterface::Execute_IsDead(SpawnActor))
+TSubclassOf<AActor> ASpawnActor::GetRandomSpawnActor()
+{
+	float RandomWeight = FMath::FRandRange(0, TotalSpawnWeight);
+	for (auto& Pair : SpawnActorClassAndWeight)
+	{
+		if (RandomWeight < Pair.Value)
 		{
-			RemoveActors.AddUnique(SpawnActor);
+			return Pair.Key;
+		}
+		else
+		{
+			RandomWeight -= Pair.Value;
 		}
 	}
 
-	for (AActor* SpawnActor : RemoveActors)
-	{
-		AliveActors.Remove(SpawnActor);
-	}
+	return nullptr;
 }

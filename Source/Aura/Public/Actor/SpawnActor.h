@@ -18,7 +18,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	TSubclassOf<AActor> SpawnActorClass;
+	TMap<TSubclassOf<AActor>, float> SpawnActorClassAndWeight;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	float IntervalSpawnTimeSecond = 10.0f;
@@ -27,13 +27,30 @@ protected:
 	int32 MaxSpawnAliveCount = 10;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	float IntervalCheckCountTimeSecond = 1.0f;
+	float SpawnSpread = 90.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	float MinSpawnDistance = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	float MaxSpawnDistance = 100.0f;
 
 	FTimerHandle SpawnTimerHandle;
-	FTimerHandle RefreshCountTimerHandle;
 
-	void SpawnActor();
-	void RefreshAlive();
-
+	UPROPERTY(BlueprintReadOnly, Category = "Spawn")
 	TArray<AActor*> AliveActors;
+
+private:
+	UFUNCTION()
+	void SpawnActor();
+
+	UFUNCTION()
+	void OnActorDestroyed(AActor* DestroyedActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Spawn")
+	TSubclassOf<AActor> GetRandomSpawnActor();
+
+	void InitializeData();
+
+	float TotalSpawnWeight = 0.0f;
 };

@@ -45,6 +45,7 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 void AAuraCharacterBase::Die()
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	CharacterDeadDelegate.Broadcast(this);
 	MulticastHandleDeath();
 }
 
