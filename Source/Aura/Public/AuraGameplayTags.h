@@ -71,6 +71,8 @@ public:
 	FGameplayTag Montage_Attack_3;
 	FGameplayTag Montage_Attack_4;
 
+	FGameplayTag Cooldown_Fire_FireBolt;
+
 protected:
 
 private:
