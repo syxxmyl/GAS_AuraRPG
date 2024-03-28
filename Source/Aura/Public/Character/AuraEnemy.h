@@ -26,7 +26,7 @@ public:
 	AAuraEnemy();
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	virtual void PossessedBy(AController* NewController) override;
 
 	UPROPERTY(BlueprintReadOnly)
