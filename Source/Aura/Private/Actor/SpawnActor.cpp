@@ -68,7 +68,8 @@ void ASpawnActor::SpawnActor()
 
 	if (Hit.bBlockingHit)
 	{
-		FVectorStartupLocation = Hit.ImpactPoint;
+		FVectorStartupLocation.X = Hit.ImpactPoint.X;
+		FVectorStartupLocation.Y = Hit.ImpactPoint.Y;
 	}
 
 	/*
