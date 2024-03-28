@@ -35,6 +35,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	float MaxSpawnDistance = 100.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	float SpawnLocationZIncrement = 50.0f;
+
 	FTimerHandle SpawnTimerHandle;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Spawn")

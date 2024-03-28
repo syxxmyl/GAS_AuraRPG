@@ -61,8 +61,8 @@ void ASpawnActor::SpawnActor()
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByChannel(
 		Hit,
-		FVectorStartupLocation + FVector(0.0f, 0.0f, 500.0f),
-		FVectorStartupLocation + FVector(0.0f, 0.0f, -500.0f),
+		FVectorStartupLocation + FVector(0.0f, 0.0f, 300.0f),
+		FVectorStartupLocation + FVector(0.0f, 0.0f, -300.0f),
 		ECC_Visibility
 	);
 
@@ -70,6 +70,7 @@ void ASpawnActor::SpawnActor()
 	{
 		FVectorStartupLocation.X = Hit.ImpactPoint.X;
 		FVectorStartupLocation.Y = Hit.ImpactPoint.Y;
+		FVectorStartupLocation.Z = Hit.ImpactPoint.Z + SpawnLocationZIncrement;
 	}
 
 	/*
@@ -79,7 +80,9 @@ void ASpawnActor::SpawnActor()
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + RightOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Blue, 3.0f);
 	*/
 
-	AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnActorClass, FVectorStartupLocation, GetActorRotation());
+	FActorSpawnParameters Parameter;
+	Parameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnActorClass, FVectorStartupLocation, GetActorRotation(), Parameter);
 	if (!SpawnActor)
 	{
 		return;
