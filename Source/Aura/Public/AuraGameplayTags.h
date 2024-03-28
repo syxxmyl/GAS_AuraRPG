@@ -73,6 +73,8 @@ public:
 
 	FGameplayTag Cooldown_Fire_FireBolt;
 
+	FGameplayTag Attributes_Meta_IncomingXP;
+
 protected:
 
 private:
