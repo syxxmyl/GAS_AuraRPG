@@ -6,6 +6,7 @@
 #include "AbilitySystem/Data/AttributeInfo.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystemComponent.h"
+#include "Player/AuraPlayerState.h"
 
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
@@ -33,6 +34,14 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
+
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	AuraPlayerState->OnAttributePointsChangedDelegate.AddLambda(
+		[this](int32 Points)
+		{
+			OnAttributePointsChangedDelegate.Broadcast(Points);
+		}
+	);
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag, const FGameplayAttribute& Attribute) const
