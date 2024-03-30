@@ -39,6 +39,8 @@ public:
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
 	void ForEachAbility(const FForEachAbility& Delegate);
 
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
