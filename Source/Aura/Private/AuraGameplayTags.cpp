@@ -258,6 +258,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Type Passive")
 	);
 
+	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.None"),
+		FString("No Ability - like the nullptr for Ability Tags")
+	);
+
 	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.FireBolt"),
 		FString("FireBolt Ability Tag")
