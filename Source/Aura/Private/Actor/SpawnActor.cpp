@@ -3,8 +3,10 @@
 
 #include "Actor/SpawnActor.h"
 #include "Interaction/CombatInterface.h"
-#include "Character/AuraCharacterBase.h"
-// #include "Kismet/KismetSystemLibrary.h"
+#include "Interaction/EnemyInterface.h"
+#include "Actor/AuraEffectActor.h"
+#include "Character/AuraEnemy.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ASpawnActor::ASpawnActor()
@@ -37,6 +39,18 @@ void ASpawnActor::InitializeData()
 			return A < B;
 		}
 	);	
+}
+
+void ASpawnActor::SetActorLevel(AActor* SpawnActor)
+{
+	if (AAuraEffectActor* EffectActor = Cast<AAuraEffectActor>(SpawnActor))
+	{
+		EffectActor->SetActorLevel(SpawnActorLevel);
+	}
+	else if (IEnemyInterface* Enemy = Cast<IEnemyInterface>(SpawnActor))
+	{
+		Enemy->SetActorLevel(SpawnActorLevel);
+	}
 }
 
 void ASpawnActor::SpawnActor()
@@ -80,14 +94,18 @@ void ASpawnActor::SpawnActor()
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + RightOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Blue, 3.0f);
 	*/
 
-	FActorSpawnParameters Parameter;
-	Parameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnActorClass, FVectorStartupLocation, GetActorRotation(), Parameter);
+	// FActorSpawnParameters Parameter;
+	// Parameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	FTransform Transform(GetActorRotation().Quaternion(), FVectorStartupLocation);
+
+	AActor* SpawnActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnActorClass, Transform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+	//GetWorld()->SpawnActor<AActor>(SpawnActorClass, FVectorStartupLocation, GetActorRotation(), Parameter);
 	if (!SpawnActor)
 	{
 		return;
 	}
-	
+	SetActorLevel(SpawnActor);
+	UGameplayStatics::FinishSpawningActor(SpawnActor, Transform);
 	if (AAuraCharacterBase* AuraCharacter = Cast<AAuraCharacterBase>(SpawnActor))
 	{
 		AuraCharacter->CharacterDeadDelegate.AddDynamic(this, &ASpawnActor::OnActorDestroyed);

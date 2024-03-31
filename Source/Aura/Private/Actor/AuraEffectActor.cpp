@@ -13,6 +13,11 @@ AAuraEffectActor::AAuraEffectActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("SceneRoot"));
 }
 
+void AAuraEffectActor::SetActorLevel(int32 Level)
+{
+	ActorLevel = Level;
+}
+
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();

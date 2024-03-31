@@ -24,5 +24,5 @@ class AURA_API IEnemyInterface
 public:
 	virtual void HighlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
-
+	virtual void SetActorLevel(int32 ActorLevel) = 0;
 };

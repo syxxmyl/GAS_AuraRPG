@@ -38,6 +38,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	float SpawnLocationZIncrement = 50.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	int32 SpawnActorLevel = 1;
+
 	FTimerHandle SpawnTimerHandle;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Spawn")
@@ -56,4 +59,6 @@ private:
 	void InitializeData();
 
 	float TotalSpawnWeight = 0.0f;
+
+	void SetActorLevel(AActor* SpawnActor);
 };

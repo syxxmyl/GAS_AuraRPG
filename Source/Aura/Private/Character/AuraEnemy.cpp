@@ -188,3 +188,8 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 {
 	return CombatTarget;
 }
+
+void AAuraEnemy::SetActorLevel(int32 ActorLevel)
+{
+	Level = ActorLevel;
+}
