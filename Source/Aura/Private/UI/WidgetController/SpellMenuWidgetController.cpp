@@ -35,6 +35,8 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		}
 	);
 
+	GetAuraASC()->AbilityEquipped.AddUObject(this, &USpellMenuWidgetController::OnAbilityEquipped);
+
 	GetAuraPS()->OnSpellPointsChangedDelegate.AddLambda(
 		[this](int32 SpellPoints)
 		{
@@ -107,6 +109,43 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	const FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.Ability).AbilityType;
 	WaitForEquipDelegate.Broadcast(AbilityType);
 	bWaitingForEquipSelection = true;
+}
+
+void USpellMenuWidgetController::SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType)
+{
+	if (!bWaitingForEquipSelection)
+	{
+		return;
+	}
+
+	// Check selected ability against the slot's ability type.
+	// (don't equip an offensive spell in a passive slot and vice versa)
+	const FGameplayTag TypeTag = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.Ability).AbilityType;
+	if (!TypeTag.MatchesTagExact(AbilityType))
+	{
+		return;
+	}
+
+	GetAuraASC()->ServerEquipAbility(SelectedAbility.Ability, SlotTag);
+}
+
+void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& Slot, const FGameplayTag& PreviousSlot)
+{
+	bWaitingForEquipSelection = false;
+
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	FAuraAbilityInfo PrevSlotInfo;
+	PrevSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	PrevSlotInfo.InputTag = PreviousSlot;
+	PrevSlotInfo.AbilityTag = GameplayTags.Abilities_None;
+	AbilityInfoDelegate.Broadcast(PrevSlotInfo);
+
+	FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = Status;
+	Info.InputTag = Slot;
+	AbilityInfoDelegate.Broadcast(Info);
+
+	StopWaitingForEquipDelegate.Broadcast(AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType);
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)
