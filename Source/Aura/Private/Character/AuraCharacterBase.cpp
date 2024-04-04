@@ -8,6 +8,7 @@
 #include "Aura/Aura.h"
 #include "AuraGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -24,6 +25,12 @@ AAuraCharacterBase::AAuraCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
+
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+
+	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");
+	BurnDebuffComponent->SetupAttachment(GetRootComponent());
+	BurnDebuffComponent->DebuffTag = GameplayTags.Debuff_Burn;
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -64,6 +71,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	BurnDebuffComponent->Deactivate();
 	Dissolve();
 	bDead = true;
 }
@@ -191,4 +199,9 @@ void AAuraCharacterBase::AddCharacterAbilities()
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	AuraASC->AddCharacterAbilities(StartupAbilities);
 	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
+}
+
+FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnAscRegistered;
 }

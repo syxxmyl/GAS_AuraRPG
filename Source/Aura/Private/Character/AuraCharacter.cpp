@@ -60,6 +60,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 	}
 
 	InitializeDefaultAttributes();
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)

@@ -10,6 +10,10 @@
 
 
 class UAnimMontage;
+class UAbilitySystemComponent;
+
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
 
 
 USTRUCT(BlueprintType)
@@ -90,4 +94,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	ECharacterClass GetCharacterClass();
+
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
 };
