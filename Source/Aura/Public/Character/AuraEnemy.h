@@ -44,7 +44,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float BaseWalkSpeed = 250.0f;
 
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float LifeSpan = 5.0f;
 

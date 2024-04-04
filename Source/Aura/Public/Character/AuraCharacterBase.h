@@ -34,11 +34,11 @@ public:
 	
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastHandleDeath();
+	void MulticastHandleDeath(const FVector& DeathImpulse);
 
 	// CombatInterface
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatarActor_Implementation() override;
