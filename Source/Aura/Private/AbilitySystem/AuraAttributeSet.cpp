@@ -266,7 +266,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	Effect->Period = FScalableFloat(DebuffFrequency);
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
-	// add gameplay tag
+	// add gameplay tag to granted tags.
 	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 
 	// set stack info
