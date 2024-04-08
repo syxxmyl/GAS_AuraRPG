@@ -27,8 +27,8 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 public:
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
-	
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHandleDeath(const FVector& DeathImpulse);
@@ -52,9 +52,15 @@ public:
 	FOnCharacterDeadSignature CharacterDeadDelegate;
 	FOnASCRegistered OnAscRegistered;
 
+	UPROPERTY(ReplicatedUsing = OnRep_Stunned, BlueprintReadOnly)
+	bool bIsStunned = false;
+
+	UFUNCTION()
+	virtual void OnRep_Stunned();
+
 protected:
 	virtual void BeginPlay() override;
-	
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	virtual void InitAbilityActorInfo();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
@@ -129,6 +135,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float BaseWalkSpeed = 600.f;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Abilities")

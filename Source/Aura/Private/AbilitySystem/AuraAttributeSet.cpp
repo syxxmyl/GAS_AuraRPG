@@ -272,8 +272,16 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	Effect->Period = FScalableFloat(DebuffFrequency);
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
-	// add gameplay tag to granted tags.
-	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
+	// add gameplay tags to granted tags.
+	const FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
+	Effect->InheritableOwnedTagsContainer.AddTag(DebuffTag);
+	if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
+	{
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_CursorTrace);
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_InputHeld);
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_InputPressed);
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_InputReleased);
+	}
 
 	// set stack info
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
