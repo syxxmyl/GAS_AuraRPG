@@ -14,6 +14,7 @@ class UAbilitySystemComponent;
 
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeadSignature, AActor*, DeadCharacter);
 
 
 USTRUCT(BlueprintType)
@@ -102,4 +103,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	USkeletalMeshComponent* GetWeapon();
+
+	virtual FOnCharacterDeadSignature& GetOnDeathDelegate() = 0;
 };

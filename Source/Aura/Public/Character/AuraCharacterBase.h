@@ -19,9 +19,6 @@ class USoundBase;
 class UDebuffNiagaraComponent;
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeadSignature, AActor*, DeadCharacter);
-
-
 UCLASS()
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -50,6 +47,7 @@ public:
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
+	virtual FOnCharacterDeadSignature& GetOnDeathDelegate() override;
 
 	FOnCharacterDeadSignature CharacterDeadDelegate;
 	FOnASCRegistered OnAscRegistered;

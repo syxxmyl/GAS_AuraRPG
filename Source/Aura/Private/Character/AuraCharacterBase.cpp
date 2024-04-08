@@ -52,7 +52,6 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 void AAuraCharacterBase::Die(const FVector& DeathImpulse)
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	CharacterDeadDelegate.Broadcast(this);
 	MulticastHandleDeath(DeathImpulse);
 }
 
@@ -76,6 +75,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	BurnDebuffComponent->Deactivate();
 	Dissolve();
 	bDead = true;
+	CharacterDeadDelegate.Broadcast(this);
 }
 
 void AAuraCharacterBase::Dissolve()
@@ -211,4 +211,9 @@ FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
 USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation()
 {
 	return Weapon;
+}
+
+FOnCharacterDeadSignature& AAuraCharacterBase::GetOnDeathDelegate()
+{
+	return CharacterDeadDelegate;
 }
