@@ -11,11 +11,12 @@
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "AbilitySystem/Passive/PassiveNiagaraComponent.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
@@ -37,12 +38,30 @@ AAuraCharacterBase::AAuraCharacterBase()
 	StunDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffComponent");
 	StunDebuffComponent->SetupAttachment(GetRootComponent());
 	StunDebuffComponent->DebuffTag = GameplayTags.Debuff_Stun;
+
+	EffectAttachComponent = CreateDefaultSubobject<USceneComponent>("EffectAttachPoint");
+	EffectAttachComponent->SetupAttachment(GetRootComponent());
+
+	HaloOfProtectionNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("HaloOfProtectionComponent");
+	HaloOfProtectionNiagaraComponent->SetupAttachment(EffectAttachComponent);
+
+	LifeSiphonNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("LifeSiphonNiagaraComponent");
+	LifeSiphonNiagaraComponent->SetupAttachment(EffectAttachComponent);
+
+	ManaSiphonNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("ManaSiphonNiagaraComponent");
+	ManaSiphonNiagaraComponent->SetupAttachment(EffectAttachComponent);
 }
 
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AAuraCharacterBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	EffectAttachComponent->SetWorldRotation(FRotator::ZeroRotator);
 }
 
 void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -16,6 +16,7 @@ DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, int32 /*AbilityLevel*/);
 DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquipped, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*Status*/, const FGameplayTag& /*Slot*/, const FGameplayTag& /*PrevSlot*/);
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /*AbilityTag*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag& /*AbilityTag*/, bool /*bActivate*/);
 
 
 /**
@@ -83,6 +84,11 @@ public:
 	FAbilityEquipped AbilityEquipped;
 
 	FDeactivatePassiveAbility DeactivatePassiveAbility;
+
+	FActivatePassiveEffect ActivatePassiveEffect;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastActivatePassiveEffect(const FGameplayTag& AbilityTag, bool bActivate);
 
 protected:
 	virtual void OnRep_ActivateAbilities() override;

@@ -334,6 +334,11 @@ void UAuraAbilitySystemComponent::ClearAbilitiesOfSlot(const FGameplayTag& Slot)
 	}
 }
 
+void UAuraAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag, bool bActivate)
+{
+	ActivatePassiveEffect.Broadcast(AbilityTag, bActivate);
+}
+
 bool UAuraAbilitySystemComponent::SlotIsEmpty(const FGameplayTag& Slot)
 {
 	FScopedAbilityListLock ActiveScopeLoc(*this);
@@ -431,6 +436,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 					if (IsPassiveAbility(*SpecWithSlot))
 					{
 						DeactivatePassiveAbility.Broadcast(GetAbilityTagFromSpec(*SpecWithSlot));
+						MulticastActivatePassiveEffect(GetAbilityTagFromSpec(*SpecWithSlot), false);
 					}
 
 					// clear old ability.
@@ -444,6 +450,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 				if (IsPassiveAbility(*AbilitySpec))
 				{
 					TryActivateAbility(AbilitySpec->Handle);
+					MulticastActivatePassiveEffect(AbilityTag, true);
 				}
 			}
 
