@@ -105,4 +105,10 @@ public:
 	USkeletalMeshComponent* GetWeapon();
 
 	virtual FOnCharacterDeadSignature& GetOnDeathDelegate() = 0;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsBeingShocked() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetIsBeingShocked(bool bInShock);
 };
