@@ -27,6 +27,7 @@ public:
 	virtual void OnRep_PlayerState() override;
 	virtual int32 GetPlayerLevel_Implementation() override;
 	virtual void OnRep_Stunned() override;
+	virtual void OnRep_Burned() override;
 
 	/** Player Interface */
 	virtual void AddToXP_Implementation(int32 InXP) override;
