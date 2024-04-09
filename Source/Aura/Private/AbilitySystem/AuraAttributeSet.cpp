@@ -216,6 +216,16 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		{
 			Debuff(Props);
 		}
+
+		if (UAuraAbilitySystemLibrary::IsHaveLifeSiphon(Props.SourceCharacter))
+		{
+			LifeSiphon(Props.SourceAvatarActor, LocalIncomingDamage);
+		}
+
+		if (UAuraAbilitySystemLibrary::IsHaveManaSiphon(Props.SourceCharacter))
+		{
+			ManaSiphon(Props.SourceAvatarActor, LocalIncomingDamage);
+		}
 	}
 }
 
@@ -312,6 +322,66 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
 		AuraContext->SetDamageType(DebuffDamageType);
 		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
+	}
+}
+
+void UAuraAttributeSet::LifeSiphon(AActor* Actor, float Damage)
+{
+	float LifeSiphonAmount = Damage * 0.1f;
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
+	if (!ASC)
+	{
+		return;
+	}
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(Actor);
+
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(TEXT("LifeSiphon")));
+
+	Effect->DurationPolicy = EGameplayEffectDurationType::Instant;
+
+	const int32 NextIndex = Effect->Modifiers.Num();
+	Effect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[NextIndex];
+
+	ModifierInfo.Attribute = UAuraAttributeSet::GetHealthAttribute();
+	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+	ModifierInfo.ModifierMagnitude = FScalableFloat(LifeSiphonAmount);
+
+	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.0f))
+	{
+		FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		ASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
+	}
+}
+
+void UAuraAttributeSet::ManaSiphon(AActor* Actor, float Damage)
+{
+	float ManaSiphonAmount = Damage * 0.1f;
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
+	if (!ASC)
+	{
+		return;
+	}
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(Actor);
+
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(TEXT("LifeSiphon")));
+
+	Effect->DurationPolicy = EGameplayEffectDurationType::Instant;
+
+	const int32 NextIndex = Effect->Modifiers.Num();
+	Effect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[NextIndex];
+
+	ModifierInfo.Attribute = UAuraAttributeSet::GetManaAttribute();
+	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+	ModifierInfo.ModifierMagnitude = FScalableFloat(ManaSiphonAmount);
+
+	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.0f))
+	{
+		FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		ASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
 	}
 }
 

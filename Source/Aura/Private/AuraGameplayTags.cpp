@@ -292,6 +292,25 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	/*
+	 * Passive Effects
+	 */
+
+	GameplayTags.Effects_Passive_HaloOfProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Passive.HaloOfProtection"),
+		FString("Reduce damage effect")
+	);
+
+	GameplayTags.Effects_Passive_LifeSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Passive.LifeSiphon"),
+		FString("Life siphon effect")
+	);
+
+	GameplayTags.Effects_Passive_ManaSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Passive.ManaSiphon"),
+		FString("Mana siphon effect")
+	);
+
+	/*
 	 * Combat Sockets
 	 */
 

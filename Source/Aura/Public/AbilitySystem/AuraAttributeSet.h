@@ -240,4 +240,6 @@ private:
 	void HandleIncomingDamage(const FEffectProperties& Props);
 	void HandleIncomingXP(const FEffectProperties& Props);
 	void Debuff(const FEffectProperties& Props);
+	void LifeSiphon(AActor* Actor, float Damage);
+	void ManaSiphon(AActor* Actor, float Damage);
 };

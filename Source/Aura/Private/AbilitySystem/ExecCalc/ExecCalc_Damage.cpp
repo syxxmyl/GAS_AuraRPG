@@ -172,6 +172,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
 	Damage = bCriticalHit ? Damage * 2.0f + SourceCriticalHitDamage : Damage;
 
+	// check target has HaloOfProtection tag
+	if (UAuraAbilitySystemLibrary::IsHaveHaloOfProtection(TargetAvatar))
+	{
+		Damage *= 0.5f;
+	}
+
 	FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
 }

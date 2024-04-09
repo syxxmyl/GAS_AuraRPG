@@ -454,3 +454,30 @@ TArray<FVector> UAuraAbilitySystemLibrary::EvenlyRotatedVectors(const FVector& F
 	}
 	return Vectors;
 }
+
+bool UAuraAbilitySystemLibrary::IsHaveHaloOfProtection(AActor* TargetActor)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
+	{
+		return ASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Effects_Passive_HaloOfProtection);
+	}
+	return false;
+}
+
+bool UAuraAbilitySystemLibrary::IsHaveLifeSiphon(AActor* TargetActor)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
+	{
+		return ASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Effects_Passive_LifeSiphon);
+	}
+	return false;
+}
+
+bool UAuraAbilitySystemLibrary::IsHaveManaSiphon(AActor* TargetActor)
+{
+	if (UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
+	{
+		return ASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Effects_Passive_ManaSiphon);
+	}
+	return false;
+}
