@@ -177,10 +177,13 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		return;
 	}
 
-	if (InputTag.IsValid() && InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	if (InputTag.IsValid())
 	{
-		bTargeting = ThisActor != nullptr;
-		bAutoRunning = false;
+		if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+		{
+			bTargeting = ThisActor != nullptr;
+			bAutoRunning = false;
+		}
 
 		if (GetASC())
 		{
