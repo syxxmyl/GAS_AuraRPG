@@ -118,6 +118,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Resistance = FMath::Clamp(Resistance, 0.0f, 99.0f);
 
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false);
+		if (DamageTypeValue <= 0.f)
+		{
+			continue;
+		}
+
 		DamageTypeValue *= (100.0f - Resistance) / 100.0f;
 
 		if (UAuraAbilitySystemLibrary::IsRadialDamage(EffectContextHandle))
