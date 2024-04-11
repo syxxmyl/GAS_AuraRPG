@@ -42,6 +42,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USphereComponent> Sphere;
 
+	UFUNCTION(BlueprintCallable)
 	void OnHit();
 
 private:
