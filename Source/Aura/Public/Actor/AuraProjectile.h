@@ -45,6 +45,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnHit();
 
+	bool IsValidOverlap(AActor* OtherActor);
+	bool bHit = false;
+
 private:
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.0f;
@@ -54,8 +57,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> ImpactSound;
-
-	bool bHit;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> LoopingSound;
