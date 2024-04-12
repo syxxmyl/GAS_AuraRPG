@@ -106,7 +106,7 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 
 		const float XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelRequirement);
 
-		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
+		OnXPPercentChangedDelegate.Broadcast(XPBarPercent, XPForThisLevel, DeltaLevelRequirement);
 	}
 }
 
