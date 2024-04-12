@@ -7,6 +7,13 @@
 #include "UI/ViewModel/MVVM_LoadSlot.h"
 
 
+void AAuraGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Maps.Add(DefaultMapName, DefaultMap);
+}
+
 void AAuraGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 {
 	if (UGameplayStatics::DoesSaveGameExist(LoadSlot->LoadSlotName, SlotIndex))
@@ -17,7 +24,7 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
 	if (ULoadScreenSaveGame* LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject))
 	{
-		LoadScreenSaveGame->PlayerName = LoadSlot->PlayerName;
+		LoadScreenSaveGame->PlayerName = LoadSlot->GetPlayerName();
 		LoadScreenSaveGame->SaveSlotStatus = ESaveSlotStatus::Taken;
 
 		UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlot->LoadSlotName, SlotIndex);

@@ -36,12 +36,11 @@ public:
 	* Field Notifies 
 	*/
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter);
-	FString PlayerName;
-
 	void SetPlayerName(FString InPlayerName);
+	void SetMapName(FString InMapName);
 
 	FString GetPlayerName() const { return PlayerName; }
+	FString GetMapName() const { return MapName; }
 
 	/*
 	* Delegates
@@ -52,4 +51,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FEnableSelectSlotButton EnableSelectSlotButton;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"));
+	FString PlayerName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"));
+	FString MapName;
 };
