@@ -6,6 +6,10 @@
 #include "MVVMViewModelBase.h"
 #include "MVVM_LoadScreen.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSlotSelected);
+
+
 /**
  * 
  */
@@ -33,6 +37,13 @@ public:
 	void SelectSlotButtonPressed(int32 Slot);
 
 	void LoadData();
+
+	/*
+	* Delegates
+	*/
+
+	UPROPERTY(BlueprintAssignable)
+	FSlotSelected SlotSelected;
 
 private:
 	UPROPERTY()
