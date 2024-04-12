@@ -76,10 +76,12 @@ void UMVVM_LoadScreen::LoadData()
 			if (SaveObject)
 			{
 				const FString PlayerName = SaveObject->PlayerName;
+				const FString MapName = SaveObject->MapName;
 				TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = SaveObject->SaveSlotStatus;
 
 				LoadSlot.Value->SetPlayerName(PlayerName);
 				LoadSlot.Value->SlotStatus = SaveSlotStatus;
+				LoadSlot.Value->SetMapName(MapName);
 
 				LoadSlot.Value->InitializeSlot();
 			}
