@@ -46,6 +46,8 @@ public:
 	virtual void SaveProgress_Implementation(const FName& CheckpointTag) override;
 	/** end Player Interface */
 
+	void LoadProgress();
+
 protected:
 	virtual void InitAbilityActorInfo() override;
 
