@@ -18,6 +18,7 @@
 #include "Game/AuraGameModeBase.h"
 #include "Game/LoadScreenSaveGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -214,6 +215,19 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 		if (ULoadScreenSaveGame* SaveData = AuraGameMode->RetrieveInGameSaveData())
 		{
 			SaveData->PlayerStartTag = CheckpointTag;
+
+			if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+			{
+				SaveData->PlayerLevel = AuraPlayerState->GetPlayerLevel();
+				SaveData->XP = AuraPlayerState->GetXP();
+				SaveData->AttributePoints = AuraPlayerState->GetAttributePoints();
+				SaveData->SpellPoints = AuraPlayerState->GetSpellPoints();
+			}
+
+			SaveData->Strength = UAuraAttributeSet::GetStrengthAttribute().GetNumericValue(GetAttributeSet());
+			SaveData->Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
+			SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
+			SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
 
 			AuraGameMode->SaveInGameProgressData(SaveData);
 		}
