@@ -8,6 +8,7 @@
 
 
 class UGameplayAbility;
+class ULoadScreenSaveGame;
 
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer&/*AssetTags*/);
@@ -30,16 +31,13 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	void AbilityActorInfoSet();
 
-	FEffectAssetTags EffectAssetTags;
-
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupPassiveAbilities);
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-
-	FAbilitiesGiven AbilitiesGivenDelegate;
+	
 	bool bStartupAbilitiesGiven = false;
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
@@ -65,8 +63,6 @@ public:
 
 	void UpdateAbilityStatuses(int32 PlayerLevel);
 
-	FAbilityStatusChanged AbilityStatusChanged;
-
 	UFUNCTION(Server, Reliable)
 	void ServerSpendSpellPoint(const FGameplayTag& AbilityTag);
 
@@ -81,14 +77,21 @@ public:
 	static void ClearSlot(FGameplayAbilitySpec* Spec);
 	void SetAbilityStatus(FGameplayAbilitySpec* Spec, FGameplayTag Status);
 	void ClearAbilitiesOfSlot(const FGameplayTag& Slot);
-	FAbilityEquipped AbilityEquipped;
-
-	FDeactivatePassiveAbility DeactivatePassiveAbility;
-
-	FActivatePassiveEffect ActivatePassiveEffect;
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastActivatePassiveEffect(const FGameplayTag& AbilityTag, bool bActivate);
+
+	void AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveData);
+
+	/*
+	* Delegates
+	*/
+	FEffectAssetTags EffectAssetTags;
+	FAbilitiesGiven AbilitiesGivenDelegate;
+	FAbilityStatusChanged AbilityStatusChanged;
+	FAbilityEquipped AbilityEquipped;
+	FActivatePassiveEffect ActivatePassiveEffect;
+	FDeactivatePassiveAbility DeactivatePassiveAbility;
 
 protected:
 	virtual void OnRep_ActivateAbilities() override;

@@ -21,6 +21,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -234,6 +235,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 			{
 				if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 				{
+					SaveData->SavedAbilities.Empty();
 					FForEachAbility SaveAbilityDelegate;
 					SaveAbilityDelegate.BindLambda(
 						[this, AuraASC, SaveData](const FGameplayAbilitySpec& AbilitySpec)
@@ -250,7 +252,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 							SavedAbility.AbilityType = Info.AbilityType;
 							SavedAbility.AbilityLevel = AbilitySpec.Level;
 
-							SaveData->SavedAbilities.Add(SavedAbility);
+							SaveData->SavedAbilities.AddUnique(SavedAbility);
 						}
 					);
 					AuraASC->ForEachAbility(SaveAbilityDelegate);
@@ -287,7 +289,10 @@ void AAuraCharacter::LoadProgress()
 
 				UAuraAbilitySystemLibrary::InitializeDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
 
-				//TODO: Load in Abilities from disk
+				if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+				{
+					AuraASC->AddCharacterAbilitiesFromSaveData(SaveData);
+				}
 			}
 		}
 	}
