@@ -278,6 +278,13 @@ void AAuraCharacter::LoadProgress()
 		{
 			if (SaveData->bFirstTimeLoadIn)
 			{
+				if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+				{
+					AuraPlayerState->SetLevel(1);
+					AuraPlayerState->SetXP(0);
+					AuraPlayerState->SetAttributePoints(0);
+					AuraPlayerState->SetSpellPoints(0);
+				}
 				InitializeDefaultAttributes();
 				AddCharacterAbilities();
 			}
