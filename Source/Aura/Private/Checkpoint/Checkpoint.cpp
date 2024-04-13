@@ -47,6 +47,14 @@ void ACheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
+void ACheckpoint::LoadActor_Implementation()
+{
+	if (bReached)
+	{
+		HandleGlowEffects();
+	}
+}
+
 void ACheckpoint::HandleGlowEffects()
 {
 	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
