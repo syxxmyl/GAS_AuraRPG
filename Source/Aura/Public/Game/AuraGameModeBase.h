@@ -23,6 +23,8 @@ class AURA_API AAuraGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
 
