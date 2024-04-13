@@ -14,6 +14,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "Game/AuraGameInstance.h"
+#include "Game/AuraGameModeBase.h"
+#include "Game/LoadScreenSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -200,6 +204,19 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 	{
 		AuraPlayerController->HideMagicCircle();
 		AuraPlayerController->bShowMouseCursor = true;
+	}
+}
+
+void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
+{
+	if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		if (ULoadScreenSaveGame* SaveData = AuraGameMode->RetrieveInGameSaveData())
+		{
+			SaveData->PlayerStartTag = CheckpointTag;
+
+			AuraGameMode->SaveInGameProgressData(SaveData);
+		}
 	}
 }
 
