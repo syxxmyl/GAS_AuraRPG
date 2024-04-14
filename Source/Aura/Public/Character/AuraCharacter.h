@@ -25,9 +25,13 @@ public:
 	AAuraCharacter();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	virtual int32 GetPlayerLevel_Implementation() override;
 	virtual void OnRep_Stunned() override;
 	virtual void OnRep_Burned() override;
+
+	/** Combat Interface */
+	virtual int32 GetPlayerLevel_Implementation() override;
+	virtual void Die(const FVector& DeathImpulse) override;
+	/** end Combat Interface */
 
 	/** Player Interface */
 	virtual void AddToXP_Implementation(int32 InXP) override;
@@ -47,6 +51,11 @@ public:
 	/** end Player Interface */
 
 	void LoadProgress();
+
+	UPROPERTY(EditDefaultsOnly)
+	float DeathTime = 5.f;
+
+	FTimerHandle DeathTimer;
 
 protected:
 	virtual void InitAbilityActorInfo() override;
