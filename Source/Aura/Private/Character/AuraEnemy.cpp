@@ -151,7 +151,7 @@ void AAuraEnemy::BindHitReactEffectChangedDelegate()
 	}
 }
 
-void AAuraEnemy::HighlightActor()
+void AAuraEnemy::HighlightActor_Implementation()
 {
 	bHighlighted = true;
 
@@ -162,7 +162,7 @@ void AAuraEnemy::HighlightActor()
 	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
-void AAuraEnemy::UnHighlightActor()
+void AAuraEnemy::UnHighlightActor_Implementation()
 {
 	bHighlighted = false;
 

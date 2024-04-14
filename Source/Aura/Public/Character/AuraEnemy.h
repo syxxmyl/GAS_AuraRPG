@@ -58,8 +58,8 @@ public:
 	// Enemy Interface end
 
 	/** Highlight Interface */
-	virtual void HighlightActor() override;
-	virtual void UnHighlightActor() override;
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
 	/** end Highlight Interface */
 
 protected:

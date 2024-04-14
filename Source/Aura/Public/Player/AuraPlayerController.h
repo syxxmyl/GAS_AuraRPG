@@ -21,6 +21,14 @@ class UNiagaraSystem;
 class AMagicCircle;
 
 
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NotTargeting
+};
+
+
 /**
  * 
  */
@@ -71,10 +79,12 @@ private:
 	bool bShiftKeyDown = false;
 
 	void CursorTrace();
-
-	IHighlightInterface* LastActor;
-	IHighlightInterface* ThisActor;
 	FHitResult CursorHit;
+
+	TObjectPtr<AActor> LastActor;
+	TObjectPtr<AActor> ThisActor;
+	static void HighlightActor(AActor* InActor);
+	static void UnHighlightActor(AActor* InActor);
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
@@ -93,7 +103,7 @@ private:
 	float FollowTime = 0.0f;
 	float ShortPressThreshold = 0.5;
 	bool bAutoRunning = false;
-	bool bTargeting = false;
+	ETargetingStatus TargetingStatus = ETargetingStatus::NotTargeting;
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.0f;
