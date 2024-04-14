@@ -69,8 +69,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	bool bApplyEffectsToEnemies = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	float ActorLevel = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Applied Effects")
+	float ActorLevel = 1.f;
 
 
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
