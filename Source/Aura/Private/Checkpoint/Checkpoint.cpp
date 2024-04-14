@@ -16,6 +16,11 @@ ACheckpoint::ACheckpoint(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	CheckpointMesh->SetupAttachment(GetRootComponent());
 	CheckpointMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CheckpointMesh->SetCollisionResponseToAllChannels(ECR_Block);
+	CheckpointMesh->SetCustomDepthStencilValue(CustomDepthStencilOverride);
+	CheckpointMesh->MarkRenderStateDirty();
+
+	MoveToComponent = CreateDefaultSubobject<USceneComponent>("MoveToComponent");
+	MoveToComponent->SetupAttachment(GetRootComponent());
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->SetupAttachment(CheckpointMesh);
@@ -61,4 +66,19 @@ void ACheckpoint::HandleGlowEffects()
 	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(CheckpointMesh->GetMaterial(0), this);
 	CheckpointMesh->SetMaterial(0, DynamicMaterialInstance);
 	CheckpointReached(DynamicMaterialInstance);
+}
+
+void ACheckpoint::SetMoveToLocation_Implementation(FVector& OutDestination)
+{
+	OutDestination = MoveToComponent->GetComponentLocation();
+}
+
+void ACheckpoint::HighlightActor_Implementation()
+{
+	CheckpointMesh->SetRenderCustomDepth(true);
+}
+
+void ACheckpoint::UnHighlightActor_Implementation()
+{
+	CheckpointMesh->SetRenderCustomDepth(false);
 }
