@@ -63,6 +63,8 @@ public:
 	virtual void SetMoveToLocation_Implementation(FVector& OutDestination) override;
 	/** end Highlight Interface */
 
+	void SetLevel(int32 InLevel) { Level = InLevel; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
