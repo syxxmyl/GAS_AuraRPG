@@ -17,6 +17,7 @@
 #include "Actor/MagicCircle.h"
 #include "Components/DecalComponent.h"
 #include "Aura/Aura.h"
+#include "Interaction/HighlightInterface.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -144,7 +145,7 @@ void AAuraPlayerController::CursorTrace()
     }
 
     LastActor = ThisActor;
-    ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+    ThisActor = Cast<IHighlightInterface>(CursorHit.GetActor());
     /*
         A. LastActor is null && ThisActor is null
             - Do nothing.
