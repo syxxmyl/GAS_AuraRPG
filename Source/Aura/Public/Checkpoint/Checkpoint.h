@@ -68,4 +68,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
+
+	bool bHandleGlowEffect = false;
 };

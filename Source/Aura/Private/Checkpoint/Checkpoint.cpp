@@ -68,9 +68,15 @@ void ACheckpoint::LoadActor_Implementation()
 void ACheckpoint::HandleGlowEffects()
 {
 	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (bHandleGlowEffect)
+	{
+		return;
+	}
+
 	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(CheckpointMesh->GetMaterial(0), this);
 	CheckpointMesh->SetMaterial(0, DynamicMaterialInstance);
 	CheckpointReached(DynamicMaterialInstance);
+	bHandleGlowEffect = true;
 }
 
 void ACheckpoint::SetMoveToLocation_Implementation(FVector& OutDestination)

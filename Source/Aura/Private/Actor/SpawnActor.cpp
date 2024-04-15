@@ -87,19 +87,9 @@ void ASpawnActor::SpawnActor()
 		FVectorStartupLocation.Z = Hit.ImpactPoint.Z + SpawnLocationZIncrement;
 	}
 
-	/*
-	DrawDebugSphere(GetWorld(), FVectorStartupLocation, 18.0f, 12.0f, FColor::Cyan, false, 3.0f);
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + StartupRotation * MaxSpawnDistance, 4.0f, FLinearColor::Green, 3.0f);
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + LeftOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Blue, 3.0f);
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + RightOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Blue, 3.0f);
-	*/
-
-	// FActorSpawnParameters Parameter;
-	// Parameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	FTransform Transform(GetActorRotation().Quaternion(), FVectorStartupLocation);
 
 	AActor* SpawnActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnActorClass, Transform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-	//GetWorld()->SpawnActor<AActor>(SpawnActorClass, FVectorStartupLocation, GetActorRotation(), Parameter);
 	if (!SpawnActor)
 	{
 		return;
