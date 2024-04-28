@@ -113,8 +113,7 @@ public:
 
 	UPROPERTY()
 	bool bFirstTimeLoadIn = true;
-
-	public:
+	
 	/* 
 	*Player 
 	*/
