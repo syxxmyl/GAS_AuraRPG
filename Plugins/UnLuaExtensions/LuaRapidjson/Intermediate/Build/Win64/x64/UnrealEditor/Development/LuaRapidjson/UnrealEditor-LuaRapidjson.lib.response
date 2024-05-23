@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-LuaRapidjson.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Intermediate\Build\Win64\x64\AuraEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.NoUndef.InclOrderUnreal5_0.h.obj"
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\LuaRapidjsonModule.cpp.obj"
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\Document.cpp.obj"
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\rapidjson.cpp.obj"
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\Schema.cpp.obj"
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\values.cpp.obj"
+"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\Default.rc2.res"
+/OUT:"D:\UnrealProjects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLuaExtensions\LuaRapidjson\Intermediate\Build\Win64\x64\UnrealEditor\Development\LuaRapidjson\UnrealEditor-LuaRapidjson.lib"

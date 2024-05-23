@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Zbr3AaiH7O3QRmMrHgcByEcTtg81P515577c0Z4HqgYq14yzVdduMqWzk9VrE0V1pWaD7uyt3Ksfp6giKm76jw==",
+  "success": true,
+  "projectFilePath": "D:\\UnrealProjects\\GAS_AuraRPG\\GAS_AuraRPG\\Plugins\\UnLua\\Source\\UnLuaDefaultParamCollectorUbtPlugin\\UnLuaDefaultParamCollectorUbtPlugin.ubtplugin.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}

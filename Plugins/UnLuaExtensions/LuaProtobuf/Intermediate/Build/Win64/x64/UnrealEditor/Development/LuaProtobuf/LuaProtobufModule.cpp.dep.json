@@ -1,0 +1,13 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "d:\\unrealprojects\\gas_aurarpg\\gas_aurarpg\\plugins\\unluaextensions\\luaprotobuf\\source\\private\\luaprotobufmodule.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealprojects\\gas_aurarpg\\gas_aurarpg\\plugins\\unluaextensions\\luaprotobuf\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\luaprotobuf\\pch.luaprotobuf.h.pch",
+        "Includes": [
+            "d:\\unrealprojects\\gas_aurarpg\\gas_aurarpg\\plugins\\unluaextensions\\luaprotobuf\\source\\src\\pb.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

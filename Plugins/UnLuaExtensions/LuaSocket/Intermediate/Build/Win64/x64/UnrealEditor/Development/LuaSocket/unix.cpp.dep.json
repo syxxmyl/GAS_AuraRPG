@@ -1,0 +1,13 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "d:\\unrealprojects\\gas_aurarpg\\gas_aurarpg\\plugins\\unluaextensions\\luasocket\\source\\src\\unix.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unrealprojects\\gas_aurarpg\\gas_aurarpg\\intermediate\\build\\win64\\x64\\auraeditor\\development\\engine\\sharedpch.engine.shadowerrors.noundef.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "d:\\unrealprojects\\gas_aurarpg\\gas_aurarpg\\plugins\\unluaextensions\\luasocket\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\luasocket\\definitions.luasocket.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
