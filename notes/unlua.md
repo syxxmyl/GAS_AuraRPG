@@ -122,6 +122,8 @@ return M
 
 ## 02_OverrideBlueprintEvents
 
+覆盖蓝图事件
+
 ```lua
 覆盖蓝图事件时，只需要在返回的table中声明 Receive{EventName}
 
@@ -169,31 +171,161 @@ end
 
 
 
+## 03_BindInputs
+
+绑定输入映射
+
+```lua
+需要监听按键或Action时，只需要在返回的table中声明 {KeyName}_Pressed / {KeyName}_Released
+
+例如：
+    function M:SpaceBar_Pressed()
+    end
+
+使用UnLua.Input.BindXXX接口可以实现更细节的输入绑定控制
+更多请参考：
+    UnLua\Plugins\UnLua\Content\Script\UnLua\Input.lua
+```
 
 
 
+### 看下`Input.lua`
+
+```lua
+--- 为当前模块绑定按键输入响应
+---@param Module table @需要绑定的lua模块
+---@param KeyName string @绑定的按键名称，参考EKeys下的命名
+---@param KeyEvent string @绑定的事件名称，参考EInputEvent下的命名，不需要 “IE_” 前缀
+---@param Handler fun(Key:FKey) @事件响应回调函数
+---@param Args table @[opt]扩展参数 使用 Ctrl/Shift/Alt/Cmd = true 来控制组合键
+function M.BindKey(Module, KeyName, KeyEvent, Handler, Args)
+	--
+end
+
+--- 为当前模块绑定操作输入响应
+---@param Module table @需要绑定的lua模块
+---@param ActionName string @绑定的操作名称，对应 “项目设置->输入” 中设置的命名
+---@param KeyEvent string @绑定的事件名称，参考EInputEvent下的命名，不需要 “IE_” 前缀
+---@param Handler fun(Key:FKey) @事件响应回调函数
+---@param Args table @[opt]扩展参数
+function M.BindAction(Module, ActionName, KeyEvent, Handler, Args)
+    --
+end
+
+--- 为当前模块绑定轴输入响应
+---@param Module table @需要绑定的lua模块
+---@param AxisName string @绑定的轴名称，对应 “项目设置->输入” 中设置的命名
+---@param Handler fun(AxisValue:number) @事件响应回调函数
+---@param Args table @[opt]扩展参数
+function M.BindAxis(Module, AxisName, Handler, Args)
+    --
+end
+```
 
 
 
+调用的分别是`UnLuaManager.h`里的
+
+```cpp
+UFUNCTION(BlueprintImplementableEvent)
+void InputAction(FKey Key);
+
+UFUNCTION(BlueprintImplementableEvent)
+void InputAxis(float AxisValue);
+```
+
+要注意绑定函数的参数类型
 
 
 
+### 给`AuraPlayerController`绑定lua脚本
+
+因为输入是放在AuraPlayerController里做的
+
+```lua
+local Screen = require('Screen')
+local BindKey = UnLua.Input.BindKey
+
+M["W_Pressed"] = function(self, key)
+    local msg = string.format("press %s.", key.KeyName)
+    Screen.Print(msg)
+end
+
+M["W_Released"] = function(self, key)
+    local msg = string.format("release %s.", key.KeyName)
+    Screen.Print(msg)
+end
+
+function M:A_Pressed(key)
+    local msg = string.format("press %s.", key.KeyName)
+    print(msg)
+    Screen.Print(msg)
+end
+
+function M:A_Released(key)
+    local msg = string.format("release %s.", key.KeyName)
+    print(msg)
+    Screen.Print(msg)
+end
+
+BindKey(M, "D", "Pressed", function(self, key)
+    Screen.Print("Press D")
+end)
+
+BindKey(M, "D", "Pressed", function(self, key)
+    Screen.Print("Press Ctrl+D")
+end, {Ctrl = true})
+```
 
 
 
+### 关于EnhancedInput增强输入相关的内容
+
+`Content\Script\UnLua\EnhancedInput.lua`
 
 
 
+#### 写增强输入遇到的问题
+
+没注意绑定函数的入参是什么，统一复制粘贴的FKey.KeyName，结果报错了
+
+后来去`Source\UnLua\Public\UnLuaManager.h`里看了下
+
+```cpp
+UFUNCTION(BlueprintImplementableEvent)
+void EnhancedInputActionDigital(bool ActionValue, float ElapsedSeconds, float TriggeredSeconds);
+
+UFUNCTION(BlueprintImplementableEvent)
+void EnhancedInputActionAxis1D(float ActionValue, float ElapsedSeconds, float TriggeredSeconds);
+
+UFUNCTION(BlueprintImplementableEvent)
+void EnhancedInputActionAxis2D(const FVector2D& ActionValue, float ElapsedSeconds, float TriggeredSeconds);
+
+UFUNCTION(BlueprintImplementableEvent)
+void EnhancedInputActionAxis3D(const FVector& ActionValue, float ElapsedSeconds, float TriggeredSeconds);
+```
 
 
 
+#### 照葫芦画瓢一下在`AuraPlayerController.lua`里绑定一下看看效果
 
+```lua
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_1", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    print(string.format("EnhancedInput IA_1 ElapsedSeconds=%s.", ElapsedSeconds))
+    print(string.format("EnhancedInput IA_1 TriggeredSeconds=%s.", TriggeredSeconds))
+    local msg = string.format("EnhancedInput IA_1 Started Value=%s.", ActionValue)
+    print(msg)
+    Screen.Print(msg)
+end)
 
-
-
-
-
-
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_Move", "Triggered", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    print(string.format("EnhancedInput IA_Move ElapsedSeconds=%s.", ElapsedSeconds))
+    print(string.format("EnhancedInput IA_Move TriggeredSeconds=%s.", TriggeredSeconds))
+    local msg = string.format("EnhancedInput IA_Move Triggered X=%s, Y=%s.", ActionValue.X, ActionValue.Y)
+    print(msg)
+    Screen.Print(msg)
+end)
+```
 
 
 

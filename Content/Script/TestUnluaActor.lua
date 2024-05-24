@@ -22,9 +22,9 @@ function M:Initialize(Initializer)
 end
 
 function M:ReceiveBeginPlay()
-    local msg = self:SayHi("tom")
-    print(msg)
-    Screen.Print(msg)
+    -- local msg = self:SayHi("tom")
+    -- print(msg)
+    -- Screen.Print(msg)
 end
 
 function M:ReceiveTick(DeltaSeconds)
@@ -41,6 +41,5 @@ function M:SayHi(name)
         Text from Unlua
     ]]
 end
-
 
 return M
