@@ -34,7 +34,7 @@ UnLua工具栏点击后选择`Generate IntelliSense`
 
 # 测试使用
 
-## 以官方案例01的HelloWorld为例
+## 01_HelloWorld
 
 ### 创建`BP_TestUnluaActor`
 
@@ -117,6 +117,151 @@ return M
 ### 创建`TestUnluaMap.umap`
 
 用来测试，拖个`BP_TestUnluaActor`到Level里
+
+
+
+## 02_OverrideBlueprintEvents
+
+```lua
+覆盖蓝图事件时，只需要在返回的table中声明 Receive{EventName}
+
+例如：
+    function M:ReceiveBeginPlay()
+    end
+
+除了蓝图事件可以覆盖，也可以直接声明 {FunctionName} 来覆盖Function。
+如果需要调用被覆盖的蓝图Function，可以通过 self.Overridden.{FunctionName}(self, ...) 来访问
+        
+例如：
+    function M:SayHi(name)
+        self.Overridden.SayHi(self, name)
+    end
+        
+注意：这里不可以写成 self.Overridden:SayHi(name)
+```
+
+
+
+### 在`BP_TestUnluaActor`里处理
+
+蓝图里加个Function命名为SayHi，函数的作用是返回一个字符串
+
+### 在`TestUnluaActor.lua`里处理
+
+在lua里直接声明`SayHi`来覆盖一下SayHi这个定义在蓝图里的Function，并在lua里调用被覆盖的SayHi
+
+然后在`ReceiveBeginPlay`覆盖蓝图事件的时候调用一下SayHi
+
+```lua
+function M:ReceiveBeginPlay()
+    local msg = self:SayHi("tom")
+    print(msg)
+    Screen.Print(msg)
+end
+
+function M:SayHi(name)
+    local msg = self.Overridden.SayHi(self, name)
+    return msg .. "\n\n" .. [[
+        Text from Unlua
+    ]]
+end
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
