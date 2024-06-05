@@ -331,17 +331,89 @@ end)
 
 
 
+## 04_DynamicBinding
+
+除了实现 UnLuaInterface 的静态绑定方式外，还可以在运行时动态绑定对象到Lua
+
+### 对于 Actor 类，可以使用 SpawnActor 接口
+
+```lua
+World:SpawnActor(SpawnClass, Transform, AlwaysSpawn, self, self, "Tutorials.GravitySphereActor")
+```
+
+`UnLua\Source\UnLua\Private\BaseLib\LuaLib_World.cpp`里看一下
+
+```cpp
+/**
+ * Spawn an actor.
+ * for example:
+ * World:SpawnActor(
+ *  WeaponClass, InitialTransform, ESpawnActorCollisionHandlingMethod.AlwaysSpawn,
+ *  OwnerActor, Instigator, "Weapon.AK47_C", WeaponColor, ULevel, Name
+ * )
+ * the last four parameters "Weapon.AK47_C", 'WeaponColor', ULevel and Name are optional.
+ * see programming guide for detail.
+ */
+static int32 UWorld_SpawnActor(lua_State* L)
+```
 
 
 
+### 对于非 Actor 类，可以使用 NewObject 接口
+
+```lua
+NewObject(WidgetClass, self, nil, "Tutorials.IconWidget")
+```
 
 
 
+`UnLua\Source\UnLua\Private\UELib.cpp`里看一下
+
+```cpp
+static int32 Global_NewObject(lua_State *L)
+```
 
 
 
+### 创建一个`WBP_TestWidget`
+
+一个文本框加俩按钮，实现一个`AdjustPositionInViewport`蓝图函数
+
+用`SetPositionInViewport`更新在viewport下的Position，X用`(GetViewportSize.X - SizeBox.WidthOverride) / 2`，Y用`(GetViewportSize.Y - SizeBox.HeightOverride) / 2`
 
 
+
+### 在`BP_AuraPlayerController`里加两个变量用来配置Spawn的ActorClass和WidgetClass
+
+`TestSpawnClass`用前面的`BP_TestUnluaActor`
+
+`TestSpawnWidget`用刚才创建的`WBP_TestWidget`
+
+
+
+### 接着用AuraPlayerController的EnhancedInput来测试
+
+按下`Key 1`可以`SpawnActor`
+
+按下`Key 2`可以`NewObject`
+
+```lua
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_1", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    local World = self:GetWorld()
+    local SpawnClass = self.TestSpawnClass
+    local Transform = self:GetTransform()
+    local SpawnActor = World:SpawnActor(SpawnClass, Transform, UE.ESpawnActorCollisionHandlingMethod.AdjustIfPossibleButAlwaysSpawn, self, self)
+    print(SpawnActor:SayHi("Spawn Success"))
+end)
+
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_2", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    local WidgetClass = self.TestSpawnWidget
+    local TestWidget = NewObject(WidgetClass, self, nil)
+    TestWidget:AddToViewport()
+    -- local Position = UE.UWidgetLayoutLibrary:GetViewportSize(self)
+    TestWidget:AdjustPositionInViewport()
+end)
+```
 
 
 

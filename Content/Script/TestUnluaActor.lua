@@ -13,12 +13,12 @@ local Screen = require('Screen')
 local M = UnLua.Class()
 
 function M:Initialize(Initializer)
-    -- local msg = [[
-    --     Test Unlua Actor Initialize!
-    -- ]]
+    local msg = [[
+        Test Unlua Actor Initialize!
+    ]]
 
-    -- print(msg)
-    -- Screen.Print(msg)
+    print(msg)
+    Screen.Print(msg)
 end
 
 function M:ReceiveBeginPlay()
