@@ -8,6 +8,8 @@
 
 ---@type BP_AuraPlayerController_C
 
+require('Common')
+
 local Screen = require('Screen')
 local BindKey = UnLua.Input.BindKey
 local BindAction = UnLua.Input.BindAction
@@ -15,67 +17,91 @@ local EnhancedBindAction = UnLua.EnhancedInput.BindAction
 
 local M = UnLua.Class()
 
--- function M:Initialize(Initializer)
--- end
+local function ArrayTest()
+    local array = UE.TArray(0)
+    print_array(array)
 
--- function M:UserConstructionScript()
--- end
+    array:Add(3)
+    array:Add(2)
+    print_array(array)
 
--- function M:ReceiveBeginPlay()
--- end
+    local length = array:Length()
+    print(string.format("array length = %d", length))
 
--- function M:ReceiveEndPlay()
--- end
+    local index = array:AddUnique(1)
+    print(string.format("array add unique 1 then return index = %d", index))
+    print_array(array)
 
--- function M:ReceiveTick(DeltaSeconds)
--- end
+    array:Remove(2)
+    print_array(array)
 
--- function M:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
--- end
+    array:RemoveItem(1)
+    print_array(array)
 
--- function M:ReceiveActorBeginOverlap(OtherActor)
--- end
+    array:Insert(4,2)
+    print_array(array)
 
--- function M:ReceiveActorEndOverlap(OtherActor)
--- end
+    for i = 1,5 do
+        array:Insert(i, array:Num())
+    end
+    print_array(array)
 
-M["W_Pressed"] = function(self, key)
-    -- local msg = string.format("press %s.", key.KeyName)
-    -- Screen.Print(msg)
+    array:Shuffle()
+    print_array(array)
+
+    array:Clear()
+    print_array(array)
 end
 
-M["W_Released"] = function(self, key)
-    -- local msg = string.format("release %s.", key.KeyName)
-    -- Screen.Print(msg)
+local function SetTest()
+    local set = UE.TSet(0)
+    print_set(set)
+
+    set:Add(1)
+    set:Add(2)
+    print_set(set)
+
+    for i = 1,5 do
+        set:Add(i)
+    end
+    print_set(set)
+
+    local length = set:Length()
+    print(string.format("set length = %d", length))
+
+    if set:Contains(6) == true then
+        print("set contain 6")
+    else
+        print("set doesn't contain 6")
+    end
+    
+    set:Clear()
+    print_set(set)
 end
 
-function M:A_Pressed(key)
-    -- local msg = string.format("press %s.", key.KeyName)
-    -- print(msg)
-    -- Screen.Print(msg)
+local function MapTest()
+    local map = UE.TMap(0, "")
+    print_map(map)
+
+    map:Add(1, "zhangsan")
+    map:Add(2, "lisi")
+    print_map(map)
+
+    local ret = map:Find(2)
+    print(ret)
+
+    map:Remove(2)
+    print_map(map)
+
+    map:Add(3, "wangwu")
+    map:Add(4, "zhangsan")
+    print_map(map)
 end
-
-function M:A_Released(key)
-    -- local msg = string.format("release %s.", key.KeyName)
-    -- print(msg)
-    -- Screen.Print(msg)
-end
-
-BindKey(M, "D", "Pressed", function(self, key)
-    -- Screen.Print("Press D")
-end)
-
-BindKey(M, "D", "Pressed", function(self, key)
-    -- Screen.Print("Press Ctrl+D")
-end, {Ctrl = true})
-
 
 EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
-    local World = self:GetWorld()
-    local SpawnClass = self.TestSpawnClass
-    local Transform = self:GetTransform()
-    local SpawnActor = World:SpawnActor(SpawnClass, Transform, UE.ESpawnActorCollisionHandlingMethod.AdjustIfPossibleButAlwaysSpawn, self, self)
-    print(SpawnActor:SayHi("Spawn Success"))
+    -- ArrayTest()
+    -- SetTest()
+    MapTest()
 end)
 
 EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_6", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)

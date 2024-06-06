@@ -475,17 +475,244 @@ end
 
 
 
+## 06_NativeContainers
+
+创建原生容器时通常需要指定参数类型，来确定容器内存放的数据类型
+
+```cpp
+参数类型        示例             实际类型
+boolean        true             Boolean
+number         0                Interger
+string         ""               String
+table          FVector          Vector
+userdata       FVector(1,1,1)   Vector
+```
 
 
 
+```lua
+local array = TArray({ElementType})
+local set = TSet({ElementType})
+local map = TMap({KeyType}, {ValueType})
+```
+
+创建完成后，和原来的原生容器类型使用方式是相同的，更多接口可以参考源码：
+
+```lua
+TArray      Plugins\UnLua\Source\UnLua\Private\BaseLib\LuaLib_Array.cpp
+
+TSet        Plugins\UnLua\Source\UnLua\Private\BaseLib\LuaLib_Set.cpp
+
+TMap        Plugins\UnLua\Source\UnLua\Private\BaseLib\LuaLib_Map.cpp
+```
 
 
 
+```cpp
+static const luaL_Reg TArrayLib[] =
+{
+    {"Length", TArray_Length},
+    {"Num", TArray_Length},
+    {"Add", TArray_Add},
+    {"AddUnique", TArray_AddUnique},
+    {"Find", TArray_Find},
+    {"Insert", TArray_Insert},
+    {"Remove", TArray_Remove},
+    {"RemoveItem", TArray_RemoveItem},
+    {"Clear", TArray_Clear},
+    {"Reserve", TArray_Reserve},
+    {"Resize", TArray_Resize},
+    {"GetData", TArray_GetData},
+    {"Get", TArray_Get},
+    {"GetRef", TArray_GetRef},
+    {"Set", TArray_Set},
+    {"Swap", TArray_Swap},
+    {"Shuffle", TArray_Shuffle},
+    {"LastIndex", TArray_LastIndex},
+    {"IsValidIndex", TArray_IsValidIndex},
+    {"Contains", TArray_Contains},
+    {"Append", TArray_Append},
+    {"ToTable", TArray_ToTable},
+    {"__gc", TArray_Delete},
+    {"__call", TArray_New},
+    {"__pairs", TArray_Pairs},
+    {"__index", TArray_Index},
+    {"__newindex", TArray_NewIndex},
+    {nullptr, nullptr}
+};
+```
 
 
 
+```cpp
+static const luaL_Reg TSetLib[] =
+{
+    {"Length", TSet_Length},
+    {"Num", TSet_Length},
+    {"Add", TSet_Add},
+    {"Remove", TSet_Remove},
+    {"Contains", TSet_Contains},
+    {"Clear", TSet_Clear},
+    {"ToArray", TSet_ToArray},
+    {"ToTable", TSet_ToTable},
+    {"__gc", TSet_Delete},
+    {"__call", TSet_New},
+    {nullptr, nullptr}
+};
+```
 
 
+
+```cpp
+static const luaL_Reg TMapLib[] =
+{
+    {"Length", TMap_Length},
+    {"Num", TMap_Length},
+    {"Add", TMap_Add},
+    {"Remove", TMap_Remove},
+    {"Find", TMap_Find},
+    {"FindRef", TMap_FindRef},
+    {"Clear", TMap_Clear},
+    {"Keys", TMap_Keys},
+    {"Values", TMap_Values},
+    {"ToTable", TMap_ToTable},
+    {"__gc", TMap_Delete},
+    {"__call", TMap_New},
+    {"__pairs", TMap_Pairs},
+    {nullptr, nullptr}
+};
+```
+
+
+
+### 加个新的`Common.lua`用来写输出容器的部分
+
+```lua
+function print_array(array)
+    local ret = {}
+    for i = 1, array:Length() do
+        table.insert(ret, array:Get(i))
+    end
+    print("[" .. table.concat(ret, ",") .. "]")
+end
+
+function print_set(set)
+    local array = set:ToArray()
+    local ret = {}
+    for i = 1, array:Length() do
+        table.insert(ret, array:Get(i))
+    end
+    print("(" .. table.concat(ret, ",") .. ")")
+end
+
+function print_map(map)
+    local ret = {}
+    local keys = map:Keys()
+
+    for i = 1, keys:Length() do
+        local key = keys:Get(i)
+        local val = map:Find(key)
+        table.insert(ret, key .. ":" .. tostring(val))
+    end
+
+    print("{" .. table.concat(ret, ",") .. "}")
+end
+```
+
+
+
+### 继续在`AuraPlayerController.lua`里用输入映射测试
+
+```lua
+require('Common')
+
+local function ArrayTest()
+    local array = UE.TArray(0)
+    print_array(array)
+
+    array:Add(3)
+    array:Add(2)
+    print_array(array)
+
+    local length = array:Length()
+    print(string.format("array length = %d", length))
+
+    local index = array:AddUnique(1)
+    print(string.format("array add unique 1 then return index = %d", index))
+    print_array(array)
+
+    array:Remove(2)
+    print_array(array)
+
+    array:RemoveItem(1)
+    print_array(array)
+
+    array:Insert(4,2)
+    print_array(array)
+
+    for i = 1,5 do
+        array:Insert(i, array:Num())
+    end
+    print_array(array)
+
+    array:Shuffle()
+    print_array(array)
+
+    array:Clear()
+    print_array(array)
+end
+
+local function SetTest()
+    local set = UE.TSet(0)
+    print_set(set)
+
+    set:Add(1)
+    set:Add(2)
+    print_set(set)
+
+    for i = 1,5 do
+        set:Add(i)
+    end
+    print_set(set)
+
+    local length = set:Length()
+    print(string.format("set length = %d", length))
+
+    if set:Contains(6) == true then
+        print("set contain 6")
+    else
+        print("set doesn't contain 6")
+    end
+    
+    set:Clear()
+    print_set(set)
+end
+
+local function MapTest()
+    local map = UE.TMap(0, "")
+    print_map(map)
+
+    map:Add(1, "zhangsan")
+    map:Add(2, "lisi")
+    print_map(map)
+
+    local ret = map:Find(2)
+    print(ret)
+
+    map:Remove(2)
+    print_map(map)
+
+    map:Add(3, "wangwu")
+    map:Add(4, "zhangsan")
+    print_map(map)
+end
+
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    -- ArrayTest()
+    -- SetTest()
+    MapTest()
+end)
+```
 
 
 
