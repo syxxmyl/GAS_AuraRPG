@@ -716,6 +716,69 @@ end)
 
 
 
+## 07_CallLatentFunction
+
+在Lua协程中可以方便的使用UE的Delay函数实现延迟执行的效果
+
+### 加个`Test.lua`用来存各种学习用的代码
+
+把前面的array、set、map的内容也挪过去
+
+```lua
+local function task(context, name)
+    Screen.Print(string.format('coroutine %s begin', name))
+
+    for i = 1,5 do
+        UE.UKismetSystemLibrary.Delay(context, 1)
+        Screen.Print(string.format('coroutine %s print %d', name, i))
+    end
+
+    Screen.Print(string.format('coroutine %s end', name))
+end
+
+function CoroutineTest(context)
+    coroutine.resume(coroutine.create(task), context, 'A')
+    coroutine.resume(coroutine.create(task), context, 'B')
+end
+```
+
+
+
+### 在`AuraPlayerController.lua`里处理
+
+改成用`Test.lua`里的内容
+
+```lua
+require('Test.Test')
+
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    -- ArrayTest()
+    -- SetTest()
+    -- MapTest()
+    CoroutineTest(self)
+end)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
