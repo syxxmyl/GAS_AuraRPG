@@ -70,7 +70,7 @@ BindKey(M, "D", "Pressed", function(self, key)
 end, {Ctrl = true})
 
 
-EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_1", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
     local World = self:GetWorld()
     local SpawnClass = self.TestSpawnClass
     local Transform = self:GetTransform()
@@ -78,7 +78,7 @@ EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_1", "Started", fun
     print(SpawnActor:SayHi("Spawn Success"))
 end)
 
-EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_2", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_6", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
     local WidgetClass = self.TestSpawnWidget
     local TestWidget = NewObject(WidgetClass, self, nil)
     TestWidget:AddToViewport()

@@ -417,13 +417,59 @@ end)
 
 
 
+## 05_BindDelegates
+
+可以通过对委托原生接口的调用，完成对UI事件的监听
+
+### 给`WBP_TestWidget`添加对应的绑定的lua文件
+
+在编辑器里的`Graph->Interfaces`填入lua的文件名，然后生成lua文件
+
+执行`Construct`给`TextBlock_Title`设置一下文本，然后给两个按钮绑定上`OnClicked`事件，最后调用`UE.UKismetSystemLibrary.K2_SetTimerDelegate`创建一个Timer每1秒执行一次`OnTimer`函数
+
+`OnTimer`每次执行的时候更新一下`TextBlock_Message`的文本
+
+执行`Destruct`的时候把绑定的委托都取消绑定，TimerHandle也都Clear掉
+
+```lua
+function M:Construct()
+    self.TextBlock_Title:SetText("Test Widget")
+
+    self.Button_No.Button.OnClicked:Add(self, self.OnNoButtonClicked)
+    self.Button_Yes.Button.OnClicked:Add(self, self.OnYesButtonClicked)
+
+    self.TimerHandle = UE.UKismetSystemLibrary.K2_SetTimerDelegate({self, self.OnTimer}, 1, true)
+    self:OnTimer()
+end
+
+function M:OnNoButtonClicked()
+    Screen.Print("NoButtonClicked")
+    self:RemoveFromParent()
+end
+
+function M:OnYesButtonClicked()
+    Screen.Print("YesButtonClicked")
+    self:RemoveFromParent()
+end
+
+function M:OnTimer()
+    local second = UE.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+    self.TextBlock_Message:SetText(string.format("game second: %d s", math.floor(second)))
+end
+
+function M:Destruct()
+    self.Button_No.Button.OnClicked:Remove(self, self.OnNoButtonClicked)
+    self.Button_Yes.Button.OnClicked:Remove(self, self.OnYesButtonClicked)
+
+    UE.UKismetSystemLibrary.K2_ClearAndInvalidateTimerHandle(self, self.TimerHandle)
+end
+```
 
 
 
+### 加两个单独的按键输入映射`IA_5`和`IA_6`用来测试使用
 
-
-
-
+不要和之前项目里的内容用同一个按键
 
 
 
