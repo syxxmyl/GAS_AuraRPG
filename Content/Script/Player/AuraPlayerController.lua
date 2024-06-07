@@ -18,13 +18,13 @@ local EnhancedBindAction = UnLua.EnhancedInput.BindAction
 
 local M = UnLua.Class()
 
-
-
 EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
     -- ArrayTest()
     -- SetTest()
     -- MapTest()
-    CoroutineTest(self)
+    -- CoroutineTest(self)
+    UE.UAuraAbilitySystemLibrary.CallLuaByGlobalTable()
+    UE.UAuraAbilitySystemLibrary.CallLuaByFLuaTable()
 end)
 
 EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_6", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)

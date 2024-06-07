@@ -1,5 +1,6 @@
 local Screen = require('Screen')
 
+local M = UnLua.Class()
 
 function ArrayTest()
     local array = UE.TArray(0)
@@ -97,3 +98,11 @@ function CoroutineTest(context)
     coroutine.resume(coroutine.create(task), context, 'A')
     coroutine.resume(coroutine.create(task), context, 'B')
 end
+
+function M.CppCallLuaTest(a, b)
+    local ret = a + b
+    Screen.Print(string.format('LuaSide calculate a = %f, b = %f, a + b = %f', a, b, ret))
+    return ret
+end
+
+return M

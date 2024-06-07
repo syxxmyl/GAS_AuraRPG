@@ -201,4 +201,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanics")
 	static bool IsHaveManaSiphon(AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|TestUnlua")
+	static void CallLuaByGlobalTable();
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|TestUnlua")
+	static void CallLuaByFLuaTable();
 };

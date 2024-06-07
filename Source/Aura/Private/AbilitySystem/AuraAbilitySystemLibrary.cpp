@@ -13,6 +13,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "Game/LoadScreenSaveGame.h"
+#include "UnLua.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 bool UAuraAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutWCParams, AAuraHUD*& OutAuraHUD)
@@ -644,4 +646,47 @@ bool UAuraAbilitySystemLibrary::IsHaveManaSiphon(AActor* TargetActor)
 		return ASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Effects_Passive_ManaSiphon);
 	}
 	return false;
+}
+
+void UAuraAbilitySystemLibrary::CallLuaByGlobalTable()
+{
+	UnLua::FLuaEnv Env;
+	const bool bSuccess = Env.DoString("G_TestTable = require 'Test.Test'");
+	check(bSuccess);
+
+	const UnLua::FLuaRetValues RetValues = UnLua::CallTableFunc(Env.GetMainState(), "G_TestTable", "CppCallLuaTest", 1.2f, 3.4f);
+	
+	check(RetValues.Num() == 1);
+
+	UKismetSystemLibrary::PrintString(
+		nullptr, 
+		FString::Printf(TEXT("CppSide CallLuaByGlobalTable receive ret from lua value = %f"), RetValues[0].Value<float>()), 
+		true, 
+		false, 
+		FLinearColor(1.0f,1.0f,1.0f),
+		10
+	);
+	
+}
+
+void UAuraAbilitySystemLibrary::CallLuaByFLuaTable()
+{
+	UnLua::FLuaEnv Env;
+	const UnLua::FLuaFunction Require = UnLua::FLuaFunction(&Env, "_G", "require");
+	const UnLua::FLuaRetValues RequireRetValues = Require.Call("Test.Test");
+	check(RequireRetValues.Num() == 2);
+
+	const UnLua::FLuaValue RequireRetValue = RequireRetValues[0];
+	const UnLua::FLuaTable LuaTable =  UnLua::FLuaTable(&Env, RequireRetValue);
+	const UnLua::FLuaRetValues RetValues = LuaTable.Call("CppCallLuaTest", 1.2f, 3.4f);
+	check(RetValues.Num() == 1);
+
+	UKismetSystemLibrary::PrintString(
+		nullptr,
+		FString::Printf(TEXT("CppSide CallLuaByFLuaTable receive ret from lua value = %f"), RetValues[0].Value<float>()),
+		true,
+		false,
+		FLinearColor(1.0f, 1.0f, 1.0f),
+		10
+	);
 }

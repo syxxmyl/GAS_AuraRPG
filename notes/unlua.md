@@ -763,23 +763,115 @@ end)
 
 
 
+## 08_CppCallLua
+
+在cpp里调用lua里写的函数
+
+如果需要从C++侧调用Lua，需要将UnLua模块添加到 {工程名}.Build.cs 的依赖配置里
+
+```cpp
+PrivateDependencyModuleNames.AddRange(new string[] { "UnLua", "Lua" });
+```
 
 
 
+### 修改`Test.lua`的内容
+
+用`UnLua.Class()`创建一个Table，用来支持在cpp里通过LuaTable调用函数
+
+```lua
+local M = UnLua.Class()
+
+function M.CppCallLuaTest(a, b)
+    local ret = a + b
+    Screen.Print(string.format('LuaSide calculate a = %f, b = %f, a + b = %f', a, b, ret))
+    return ret
+end
+
+return M
+```
 
 
 
+### 接着用`AuraPlayerController.lua`里的输入做触发
+
+```lua
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    -- ArrayTest()
+    -- SetTest()
+    -- MapTest()
+    -- CoroutineTest(self)
+    UE.UAuraAbilitySystemLibrary.CallLuaByGlobalTable()
+    UE.UAuraAbilitySystemLibrary.CallLuaByFLuaTable()
+end)
+```
 
 
 
+### 在`AuraAbilitySystemLibrary`加俩函数用来处理cpp调用lua
+
+一种是通过`UnLua::CallTableFunc`用`GlobalTable`调用lua函数
+
+另一种是先拿到`Require`的`LuaTable`，然后调用`LuaTable.Call`调用lua函数
+
+```cpp
+public:
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|TestUnlua")
+	static void CallLuaByGlobalTable();
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|TestUnlua")
+	static void CallLuaByFLuaTable();
+```
 
 
 
+```cpp
+#include "UnLua.h"
+#include "Kismet/KismetSystemLibrary.h"
 
+void UAuraAbilitySystemLibrary::CallLuaByGlobalTable()
+{
+	UnLua::FLuaEnv Env;
+	const bool bSuccess = Env.DoString("G_TestTable = require 'Test.Test'");
+	check(bSuccess);
 
+	const UnLua::FLuaRetValues RetValues = UnLua::CallTableFunc(Env.GetMainState(), "G_TestTable", "CppCallLuaTest", 1.2f, 3.4f);
+	
+	check(RetValues.Num() == 1);
 
+	UKismetSystemLibrary::PrintString(
+		nullptr, 
+		FString::Printf(TEXT("CppSide CallLuaByGlobalTable receive ret from lua value = %f"), RetValues[0].Value<float>()), 
+		true, 
+		false, 
+		FLinearColor(1.0f,1.0f,1.0f),
+		10
+	);
+	
+}
 
+void UAuraAbilitySystemLibrary::CallLuaByFLuaTable()
+{
+	UnLua::FLuaEnv Env;
+	const UnLua::FLuaFunction Require = UnLua::FLuaFunction(&Env, "_G", "require");
+	const UnLua::FLuaRetValues RequireRetValues = Require.Call("Test.Test");
+	check(RequireRetValues.Num() == 2);
 
+	const UnLua::FLuaValue RequireRetValue = RequireRetValues[0];
+	const UnLua::FLuaTable LuaTable =  UnLua::FLuaTable(&Env, RequireRetValue);
+	const UnLua::FLuaRetValues RetValues = LuaTable.Call("CppCallLuaTest", 1.2f, 3.4f);
+	check(RetValues.Num() == 1);
+
+	UKismetSystemLibrary::PrintString(
+		nullptr,
+		FString::Printf(TEXT("CppSide CallLuaByFLuaTable receive ret from lua value = %f"), RetValues[0].Value<float>()),
+		true,
+		false,
+		FLinearColor(1.0f, 1.0f, 1.0f),
+		10
+	);
+}
+```
 
 
 
