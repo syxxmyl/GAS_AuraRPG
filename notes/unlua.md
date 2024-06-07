@@ -777,7 +777,7 @@ PrivateDependencyModuleNames.AddRange(new string[] { "UnLua", "Lua" });
 
 ### 修改`Test.lua`的内容
 
-用`UnLua.Class()`创建一个Table，用来支持在cpp里通过LuaTable调用函数
+用`UnLua.Class()`创建一个Table，用来支持在cpp里通过Table调用函数
 
 ```lua
 local M = UnLua.Class()
