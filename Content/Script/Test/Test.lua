@@ -105,4 +105,16 @@ function M.CppCallLuaTest(a, b)
     return ret
 end
 
+function StaticExportTest(controller)
+    local AuraGameplayTags = UE.FAuraGameplayTags:Get()
+    -- print(AuraGameplayTags.Attributes_Primary_Strength)
+
+    local ps = controller.PlayerState:Cast(UE.AAuraPlayerState)
+    print(string.format('Strength = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Strength)))
+    print(string.format('Intelligence = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Intelligence)))
+    print(string.format('Resilience = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Resilience)))
+    print(string.format('Vigor = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Vigor)))
+
+end
+
 return M

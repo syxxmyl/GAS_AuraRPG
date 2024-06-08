@@ -877,13 +877,240 @@ void UAuraAbilitySystemLibrary::CallLuaByFLuaTable()
 
 
 
+## 09_StaticExport
+
+将UE中不支持反射的类用C++静态导出的方法提供给lua使用
 
 
 
 
 
+### 把`FAuraGameplayTags`用静态导出的方式提供给lua
+
+因为`Get`是个静态函数所以用`ADD_STATIC_FUNCTION`
+
+把要在lua里用的成员变量都用`ADD_PROPERTY`加一下
+
+在用`BEGIN_EXPORT_CLASS`和`END_EXPORT_CLASS`导出类后再用`IMPLEMENT_EXPORTED_CLASS`实例化
+
+```cpp
+#include "UnLuaEx.h"
+
+BEGIN_EXPORT_CLASS(FAuraGameplayTags)
+ADD_STATIC_FUNCTION(Get)
+ADD_PROPERTY(Attributes_Primary_Strength)
+ADD_PROPERTY(Attributes_Primary_Intelligence)
+ADD_PROPERTY(Attributes_Primary_Resilience)
+ADD_PROPERTY(Attributes_Primary_Vigor)
+END_EXPORT_CLASS()
+IMPLEMENT_EXPORTED_CLASS(FAuraGameplayTags)
+```
 
 
+
+### 在`AuraAttributeSet`里加个函数通过GameplayTag获取对应的属性的CurrentValue
+
+加个`UFUNCTION()`反射，这样不用手动加宏也能让lua用
+
+```cpp
+UFUNCTION()
+float GetAttributeValueByTag(const FGameplayTag& Tag);
+```
+
+
+
+```cpp
+float UAuraAttributeSet::GetAttributeValueByTag(const FGameplayTag& Tag)
+{
+	if (TagsToAttributes.Contains(Tag))
+	{
+		return TagsToAttributes[Tag]().GetNumericValue(this);
+		
+	}
+
+	return 0.0f;
+}
+```
+
+
+
+### 在`Test.lua`里测试一下
+
+先用`UE.FAuraGameplayTags:Get()`拿到FAuraGameplayTags，然后把`AController`的`PlayerState`用`Cast`转为`AAuraPlayerState`，最后调用存放在`AAuraPlayerState`里的`UAuraAttributeSet`的`GetAttributeValueByTag`拿到对应的Value
+
+```lua
+function StaticExportTest(controller)
+    local AuraGameplayTags = UE.FAuraGameplayTags:Get()
+    -- print(AuraGameplayTags.Attributes_Primary_Strength)
+
+    local ps = controller.PlayerState:Cast(UE.AAuraPlayerState)
+    print(string.format('Strength = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Strength)))
+    print(string.format('Intelligence = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Intelligence)))
+    print(string.format('Resilience = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Resilience)))
+    print(string.format('Vigor = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Vigor)))
+
+end
+```
+
+
+
+### UnLua默认导出的类
+
+基础类型
+
+- UObject
+- UClass
+- UWorld
+
+常用容器
+
+- TArray
+- TSet
+- TMap
+
+数学库
+
+- FVector
+- FVector2D
+- FVector4
+- FQuat
+- FRotator
+- FTransform
+- FColor
+- FLinearColor
+- FIntPoint
+- FIntVector
+
+
+
+### 不同类型的静态导出需要用的宏
+
+`UnLua\Source\UnLua\Public\UnLuaEx.h`里定义了具体的宏定义内容
+
+`https://github.com/Tencent/UnLua/blob/master/Docs/CN/StaticExportBinding.md`文档列举了不同类型的静态导出要用到的宏
+
+
+
+- `include "UnLuaEx.h"`		宏所在的头文件
+
+- 类
+
+- - 非反射
+
+  - - `BEGIN_EXPORT_CLASS(ClassType,...)`
+    - `BEGIN_EXPORT_NAMED_CLASS(ClassName,ClassType,...)`
+
+  - 反射类
+
+  - - `BEGIN_EXPORT_REFLECTED_CLASS(UObjectType)`
+    - `BEGIN_EXPORT_REFLECTED_CLASS(NonUObjectType,...)`
+
+- 成员变量
+
+- - `ADD_PROPERTY(Property)`
+  - `ADD_BITFIELD_BOOL_PROPERTY(Property)` 位域布尔类型的属性
+
+- 成员函数
+
+- - 非静态成员函数
+
+  - - `ADD_FUNCTION(Function)`	简写风格
+    - `ADD_NAMED_FUNCTION(Name,Function)`
+    - `ADD_FUNCTION_EX(Name,RetType,Function,...)`   完整风格
+    - `ADD_CONST_FUNCTION_EX(Name,RetType,Function,...)`
+
+  - 静态成员函数
+
+  - - `ADD_STATIC_FUNCTION(Function)`
+
+    - `ADD_STATIC_FUNCTION_EX(Name,RetType,Function,...)`
+
+      ```cpp
+      struct Vec3
+      {
+      	Vec3() : x(0), y(0), z(0) {}
+      	Vec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+      
+      	void Set(const Vec3 &V) { *this = V; }
+      	Vec3& Get() { return *this; }
+      	void Get(Vec3 &V) const { V = *this; }
+      
+      	bool operator==(const Vec3 &V) const { return x == V.x && y == V.y && z == V.z; }
+      
+      	static Vec3 Cross(const Vec3 &A, const Vec3 &B) { return Vec3(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x); }
+      	static Vec3 Multiply(const Vec3 &A, float B) { return Vec3(A.x * B, A.y * B, A.z * B); }
+      	static Vec3 Multiply(const Vec3 &A, const Vec3 &B) { return Vec3(A.x * B.x, A.y * B.y, A.z * B.z); }
+      
+      	float x, y, z;
+      };
+      
+      BEGIN_EXPORT_CLASS(Vec3, float, float, float)
+      	ADD_PROPERTY(x)
+      	ADD_PROPERTY(y)
+      	ADD_PROPERTY(z)
+      	ADD_FUNCTION(Set)
+      	ADD_NAMED_FUNCTION("Equals", operator==)
+      	ADD_FUNCTION_EX("Get", Vec3&, Get)
+      	ADD_CONST_FUNCTION_EX("GetCopy", void, Get, Vec3&)
+      	ADD_STATIC_FUNCTION(Cross)
+      	ADD_STATIC_FUNCTION_EX("MulScalar", Vec3, Multiply, const Vec3&, float)
+      	ADD_STATIC_FUNCTION_EX("MulVec", Vec3, Multiply, const Vec3&, const Vec3&)
+      END_EXPORT_CLASS()
+      IMPLEMENT_EXPORTED_CLASS(Vec3)
+      ```
+
+      
+
+- 全局函数
+
+- - `EXPORT_FUNCTION(RetType,FUnction,...)`
+  - `EXPORT_FUNCTION_EX(Name,RetType,Function)`
+  - ```cpp
+    void GetEngineVersion(int32 &MajorVer, int32 &MinorVer, int32 &PatchVer)
+    {
+    	MajorVer = ENGINE_MAJOR_VERSION;
+    	MinorVer = ENGINE_MINOR_VERSION;
+    	PatchVer = ENGINE_PATCH_VERSION;
+    }
+    
+    EXPORT_FUNCTION(void, GetEngineVersion, int32&, int32&, int32&)
+    ```
+
+  - 
+
+- 枚举
+
+- - 不带作用域的枚举
+
+    ```cpp
+    enum EHand
+    {
+    	LeftHand,
+    	RightHand
+    };
+    
+    BEGIN_EXPORT_ENUM(EHand)
+    	ADD_ENUM_VALUE(LeftHand)
+    	ADD_ENUM_VALUE(RightHand)
+    END_EXPORT_ENUM(EHand)
+    ```
+
+- - 带作用域的枚举（枚举类）
+
+    ```cpp
+    enum class EEye
+    {
+    	LeftEye,
+    	RightEye
+    };
+    
+    BEGIN_EXPORT_ENUM(EEye)
+    	ADD_SCOPED_ENUM_VALUE(LeftEye)
+    	ADD_SCOPED_ENUM_VALUE(RightEye)
+    END_EXPORT_ENUM(EEye)
+    ```
+
+    
 
 
 

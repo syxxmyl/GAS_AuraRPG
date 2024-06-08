@@ -141,6 +141,17 @@ void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute,
 	}
 }
 
+float UAuraAttributeSet::GetAttributeValueByTag(const FGameplayTag& Tag)
+{
+	if (TagsToAttributes.Contains(Tag))
+	{
+		return TagsToAttributes[Tag]().GetNumericValue(this);
+		
+	}
+
+	return 0.0f;
+}
+
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
 	if (IsValid(Props.SourceCharacter) && IsValid(Props.TargetCharacter) && Props.SourceCharacter != Props.TargetCharacter)

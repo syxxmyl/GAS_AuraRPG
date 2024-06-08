@@ -4,6 +4,8 @@
 #include "AuraGameplayTags.h"
 #include "GameplayTagsManager.h"
 
+#include "UnLuaEx.h"
+
 
 FAuraGameplayTags FAuraGameplayTags::GameplayTags;
 
@@ -475,3 +477,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("FireBlast GameplayCue Tag")
 	);
 }
+
+BEGIN_EXPORT_CLASS(FAuraGameplayTags)
+ADD_STATIC_FUNCTION(Get)
+ADD_PROPERTY(Attributes_Primary_Strength)
+ADD_PROPERTY(Attributes_Primary_Intelligence)
+ADD_PROPERTY(Attributes_Primary_Resilience)
+ADD_PROPERTY(Attributes_Primary_Vigor)
+END_EXPORT_CLASS()
+IMPLEMENT_EXPORTED_CLASS(FAuraGameplayTags)

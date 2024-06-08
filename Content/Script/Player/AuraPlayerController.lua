@@ -23,8 +23,9 @@ EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", fun
     -- SetTest()
     -- MapTest()
     -- CoroutineTest(self)
-    UE.UAuraAbilitySystemLibrary.CallLuaByGlobalTable()
-    UE.UAuraAbilitySystemLibrary.CallLuaByFLuaTable()
+    -- UE.UAuraAbilitySystemLibrary.CallLuaByGlobalTable()
+    -- UE.UAuraAbilitySystemLibrary.CallLuaByFLuaTable()
+    StaticExportTest(self)
 end)
 
 EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_6", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
