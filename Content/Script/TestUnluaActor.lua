@@ -18,13 +18,13 @@ function M:Initialize(Initializer)
     ]]
 
     print(msg)
-    Screen.Print(msg)
+    Screen.Print(self, msg)
 end
 
 function M:ReceiveBeginPlay()
     -- local msg = self:SayHi("tom")
     -- print(msg)
-    -- Screen.Print(msg)
+    -- Screen.Print(self, msg)
 end
 
 function M:ReceiveTick(DeltaSeconds)
@@ -32,7 +32,7 @@ function M:ReceiveTick(DeltaSeconds)
     --     Test Unlua Actor ReceiveTick!
     -- ]]
     -- print(msg)
-    -- Screen.Print(msg)
+    -- Screen.Print(self, msg)
 end
 
 function M:SayHi(name)

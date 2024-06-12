@@ -31,12 +31,12 @@ end
 --end
 
 function M:OnNoButtonClicked()
-    Screen.Print("NoButtonClicked")
+    Screen.Print(self, "NoButtonClicked")
     self:RemoveFromParent()
 end
 
 function M:OnYesButtonClicked()
-    Screen.Print("YesButtonClicked")
+    Screen.Print(self, "YesButtonClicked")
     self:RemoveFromParent()
 end
 

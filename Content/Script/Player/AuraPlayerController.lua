@@ -25,7 +25,8 @@ EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", fun
     -- CoroutineTest(self)
     -- UE.UAuraAbilitySystemLibrary.CallLuaByGlobalTable()
     -- UE.UAuraAbilitySystemLibrary.CallLuaByFLuaTable()
-    StaticExportTest(self)
+    -- StaticExportTest(self)
+    self:ServerPrint()    
 end)
 
 EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_6", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
@@ -41,7 +42,25 @@ EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_Move", "Triggered"
     -- print(string.format("EnhancedInput IA_Move TriggeredSeconds=%s.", TriggeredSeconds))
     -- local msg = string.format("EnhancedInput IA_Move Triggered X=%s, Y=%s.", ActionValue.X, ActionValue.Y)
     -- print(msg)
-    -- Screen.Print(msg)
+    -- Screen.Print(self, msg)
 end)
+
+function M:ServerPrint_RPC()
+    self.Count = self.Count + 1
+    Screen.Print(self, string.format('server print rpc called, count = %d', self.Count))
+    self:MulticastPrint()
+end
+
+function M:MulticastPrint_RPC()
+    local side = 'server'
+    if not self:HasAuthority() then
+        side = 'client'   
+    end
+    Screen.Print(self, string.format("on %s, %s call multicastPrint, Count = %d", side, self:GetName(), self.Count))
+end
+
+function M:OnRep_Count()
+    Screen.Print(self, string.format("unlua call Count = %d", self.Count))
+end
 
 return M

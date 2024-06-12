@@ -1114,11 +1114,60 @@ end
 
 
 
+## 10_Replications
+
+使用 {函数名}_RPC 可以覆盖蓝图中RPC函数的实现
+
+使用 OnRep_{变量名} 可以覆盖蓝图中变量同步消息的处理
 
 
 
+### 在`BP_AuraPlayerController`里创建测试用的RPC和Variable
+
+`Add Custom Event`命名为`ServerPrint`，`Replicates`选择`Run on Server`，代表这是个ServerRPC
+
+`Add Custom Event`命名为`MulticastPrint`，`Replicates`选择`Multicast`，代表这是个Multicast
+
+加个`Integer`类型的变量命名为`Count`，`Replication`设置为`RepNotify`，蓝图会自动添加一个命名为`OnRep_Count`的函数作为Notify执行的函数
 
 
+
+### 在` AuraPlayerController.lua`里测试
+
+注意复制粘贴的时候别把`ServerPrint`粘成`ServerPrint_RPC`了，否则执行的是lua里创建的函数，会少了和蓝图相关的内容，比如修改`Count`的时候不会触发`RepNotify`
+
+
+
+当按下5键时会调用`ServerPrint`，`ServerPrint_RPC`里会更新`Count`的值然后在Server端调用`MulticastPrint`
+
+客户端收到服务端同步下来的`Count`的变化会执行`OnRep_Count`
+
+因为是在服务端调用的Multicast，所以服务端自身会先执行一次`MulticastPrint_RPC`，然后对应的客户端也会执行一次`MulticastPrint_RPC`
+
+```lua
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_5", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+	-- ...
+    self:ServerPrint()    
+end)
+
+function M:ServerPrint_RPC()
+    self.Count = self.Count + 1
+    Screen.Print(self, string.format('server print rpc called, count = %d', self.Count))
+    self:MulticastPrint()
+end
+
+function M:MulticastPrint_RPC()
+    local side = 'server'
+    if not self:HasAuthority() then
+        side = 'client'   
+    end
+    Screen.Print(self, string.format("on %s, %s call multicastPrint, Count = %d", side, self:GetName(), self.Count))
+end
+
+function M:OnRep_Count()
+    Screen.Print(self, string.format("unlua call Count = %d", self.Count))
+end
+```
 
 
 

@@ -84,14 +84,14 @@ function MapTest()
 end
 
 local function task(context, name)
-    Screen.Print(string.format('coroutine %s begin', name))
+    Screen.Print(context, string.format('coroutine %s begin', name))
 
     for i = 1,5 do
         UE.UKismetSystemLibrary.Delay(context, 1)
-        Screen.Print(string.format('coroutine %s print %d', name, i))
+        Screen.Print(context, string.format('coroutine %s print %d', name, i))
     end
 
-    Screen.Print(string.format('coroutine %s end', name))
+    Screen.Print(context, string.format('coroutine %s end', name))
 end
 
 function CoroutineTest(context)
@@ -101,7 +101,7 @@ end
 
 function M.CppCallLuaTest(a, b)
     local ret = a + b
-    Screen.Print(string.format('LuaSide calculate a = %f, b = %f, a + b = %f', a, b, ret))
+    Screen.Print(self, string.format('LuaSide calculate a = %f, b = %f, a + b = %f', a, b, ret))
     return ret
 end
 
@@ -116,5 +116,7 @@ function StaticExportTest(controller)
     print(string.format('Vigor = %.0f', ps.AttributeSet:GetAttributeValueByTag(AuraGameplayTags.Attributes_Primary_Vigor)))
 
 end
+
+
 
 return M
