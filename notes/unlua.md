@@ -1171,6 +1171,224 @@ end
 
 
 
+## 11_ReleaseUMG
+
+### UMG对象的释放流程：
+
+  1、调用self:Release()，解除LuaTable在C++侧的引用
+
+  2、确保LuaTable在Lua侧没有其他引用，触发LuaGC
+
+  3、C++侧收到UObject_Delete回调，解除UMG在C++侧的引用
+
+  4、确保UMG在C++侧没有其他引用，触发UEGC
+
+
+
+### 使用控制台命令查看对象和类的引用情况：
+
+查看指定类的引用列表：`Obj List Class=ReleaseUMG_Root_C`
+
+查看指定对象的引用链：`Obj Refs Name=ReleaseUMG_Root_C_0`
+
+
+
+### 测试一下释放和垃圾回收
+
+#### 创建`WBP_TestWidgetChild`和对应的`TestWidgetChild.lua`
+
+UMG里是一个Button命名为`Button_Remove`，该UMG被父级组件创建的时候会调用`Setup`把Parent保存给Child，当按钮被点击时执行Parent的Remove操作
+
+Child自身的`Destruct`执行时会调用`self:Release()`解除luaTable在cpp侧的引用
+
+```lua
+function M:Construct()
+    Screen.Print(self, "TestWidgetChild Construct")
+
+    self.Button_Remove.OnClicked:Add(self, self.OnRemoveButtonClicked)
+end
+
+function M:Setup(parent)
+    self.parent = parent
+end
+
+function M:OnRemoveButtonClicked()
+    self.parent:Remove()
+end
+
+function M:Destruct()
+    Screen.Print(self, "TestWidgetChild Destruct")
+    self.Button_Remove.OnClicked:Remove(self, self.OnRemoveButtonClicked)
+    self:Release()
+end
+```
+
+
+
+#### 创建`WBP_TestWidgetParent`和对应的`TestWidgetParent.lua`
+
+`TestWidgetParent`的作用就是在`TestWidgetChild`外面包了一层，作为Child的Parent
+
+UMG里包含着一个`WBP_TestWidgetChild`，当Parent被构造的时候给这个Child调用`Setup`告知该Child其Parent
+
+```lua
+function M:Construct()
+    Screen.Print(self, "TestWidgetParent Construct")
+    self.WBP_TestWidgetChild:Setup(self)
+end
+
+function M:Remove()
+    self:RemoveFromParent()
+end
+
+function M:Destruct()
+    Screen.Print(self, "TestWidgetParent Destruct")
+    self:Release()
+end
+```
+
+
+
+#### 创建`WBP_TestWidgetRoot`和对应的`TestWidgetRoot.lua`
+
+作为创建和销毁Parent的Root，掌管着Parent的生命周期以及借由Parent间接管理Child的生命周期
+
+UMG中有三个Button，分别是`Button_Add`创建一个新的Parent并添加到Root的Widgets的Table里用来管理，`Button_RemoveAll`遍历Widgets里的所有Parent调用`RemoveFromParent`依次移除，`Button_Close`移除Root自身
+
+用一个` VerticalBox `作为容器存放创建的Parent们
+
+在蓝图里配置好`AddWidgetClass`变量为`WBP_TestWidgetParent`
+
+```lua
+function M:Construct()
+    Screen.Print(self, "TestWidgetRoot Construct")
+    self.Widgets = {}
+
+    self.Button_Add.Button.OnClicked:Add(self, self.OnAddButtonClicked)
+    self.Button_RemoveAll.Button.OnClicked:Add(self, self.OnRemoveAllButtonClicked)
+    self.Button_Close.Button.OnClicked:Add(self, self.OnCloseButtonClicked)
+end
+
+function M:OnAddButtonClicked()
+    Screen.Print(self, "TestWidgetRoot OnAddButtonClicked")
+    local widget = NewObject(self.AddWidgetClass, self)
+    table.insert(self.Widgets, widget)
+    self.ItemVerticalBox:AddChildToVerticalBox(widget)
+end
+
+function M:OnRemoveAllButtonClicked()
+    Screen.Print(self, "TestWidgetRoot OnRemoveAllButtonClicked")
+    for i,v in ipairs(self.Widgets) do
+        if v:IsValid() then
+            v:RemoveFromParent()
+        end
+    end
+    self.Widgets = {}
+end
+
+function M:OnCloseButtonClicked()
+    Screen.Print(self, "TestWidgetRoot OnCloseButtonClicked")
+    self:RemoveFromParent()
+end
+
+function M:Destruct()
+    self.Button_Add.Button.OnClicked:Remove(self, self.OnAddButtonClicked)
+    self.Button_RemoveAll.Button.OnClicked:Remove(self, self.OnRemoveAllButtonClicked)
+    self.Button_Close.Button.OnClicked:Remove(self, self.OnCloseButtonClicked)
+
+    Screen.Print(self, "TestWidgetRoot Destruct")
+    self:Release()
+end
+```
+
+
+
+#### 在`Destruct`的时候要切记把注册的委托Remove掉，否则会导致UObject一直被引用
+
+因为unlua在注册委托时会用`luaL_ref`创建一个放在G表里的引用
+
+```cpp
+void FDelegateRegistry::Bind(lua_State* L, int32 Index, FScriptDelegate* Delegate, UObject* SelfObject)
+{
+    //  ...
+	lua_pushvalue(L, Index);
+    const auto Ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    // ...
+}
+```
+
+如果注册的委托的实现是一个内嵌函数，且该内嵌函数的UpValue(该内嵌函数的外包函数中的局部变量，也称为外部局部变量)的类型是UObject，就会造成该UObject一直被G表引用从而无法释放，导致资源泄漏
+
+
+
+#### 在`AuraPlayerController.lua`里测试UMG的创建和销毁
+
+#### 在` AuraPlayerController.lua`里测试UMG的创建和销毁
+
+按下6键创建`WBP_TestWidgetRoot`
+
+按下L键执行一次Lua侧的垃圾回收
+
+按下C键执行一次cpp侧的垃圾回收
+
+```lua
+EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_6", "Started", function(self, ActionValue, ElapsedSeconds, TriggeredSeconds)
+    local WidgetClass = self.TestSpawnWidget
+    local TestWidget = NewObject(WidgetClass, self, nil)
+    TestWidget:AddToViewport()
+    -- local Position = UE.UWidgetLayoutLibrary:GetViewportSize(self)
+    TestWidget:AdjustPositionInViewport()
+end)
+
+function M:L_Pressed()
+    collectgarbage("collect")
+    Screen.Print(self, 'collectgarbage("collect")')
+end
+
+function M:C_Pressed()
+    UE.UKismetSystemLibrary.CollectGarbage()
+    Screen.Print(self, "UKismetSystemLibrary.CollectGarbage()")
+end
+```
+
+
+
+整个流程为按下6键调用`NewObject`创建一个`WBP_TestWidgetRoot`，点击Root的`Button_Add`调用`NewObject`创建若干个Parent，再分别点击Child自己的`Button_Remove`和Root的`Button_RemoveAll`，期间用控制台指令`Obj List Class=WBP_TestWidgetParent`观察Parent的引用情况
+
+之后按下L键和C键观察执行lua的垃圾清理和cpp的垃圾清理后的引用情况
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -45,6 +45,16 @@ EnhancedBindAction(M, "/Game/Blueprints/Input/InputActions/IA_Move", "Triggered"
     -- Screen.Print(self, msg)
 end)
 
+function M:L_Pressed()
+    collectgarbage("collect")
+    Screen.Print(self, 'collectgarbage("collect")')
+end
+
+function M:C_Pressed()
+    UE.UKismetSystemLibrary.CollectGarbage()
+    Screen.Print(self, "UKismetSystemLibrary.CollectGarbage()")
+end
+
 function M:ServerPrint_RPC()
     self.Count = self.Count + 1
     Screen.Print(self, string.format('server print rpc called, count = %d', self.Count))
