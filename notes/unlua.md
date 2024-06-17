@@ -32,7 +32,7 @@ UnLua工具栏点击后选择`Generate IntelliSense`
 
 
 
-# 测试使用
+# 按照官方文档案例走一遍流程
 
 ## 01_HelloWorld
 
@@ -1359,13 +1359,30 @@ end
 
 
 
+# 给相互有继承关系的类添加lua的绑定的时候要注意的
+
+比如本项目中的`WBP_TextValueRow`和`WBP_TextValueButtonRow`
+
+`WBP_TextValueButtonRow`是继承自`WBP_TextValueRow`的，当这两个蓝图都要添加lua绑定的时候，要先从父类`WBP_TextValueRow`开始绑定，然后再绑定子类`WBP_TextValueButtonRow`
+
+在`WBP_TextValueButtonRow`的lua文件里，创建Class的时候要指定父类的路径
+
+```lua
+local M = UnLua.Class("UI.AttributeMenu.TextValueRow")
+```
 
 
 
+`WBP_TextValueButtonRow`调用父类函数的时候就可以直接`self.Super.XXX()`了，注意如果父类定义的函数是`:`的，第一个参数是`self`
 
-
-
-
+```lua
+function M:OnReceiveAttributeInfo(info)
+    if UE.UBlueprintGameplayTagLibrary.MatchesTag(info.AttributeTag, self.AttributeTag, true) then
+        self.Super.SetLableText(self, info.AttributeName)
+        self.Super.SetNumericalValueFloat(self, info.AttributeValue)
+    end
+end
+```
 
 
 

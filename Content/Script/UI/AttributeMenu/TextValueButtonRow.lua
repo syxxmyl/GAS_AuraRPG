@@ -7,7 +7,7 @@
 --
 
 ---@type WBP_TextValueButtonRow_C
-local M = UnLua.Class()
+local M = UnLua.Class("UI.AttributeMenu.TextValueRow")
 
 function M:Construct()
     self.AttributeMenuWidgetController = UE.UAuraAbilitySystemLibrary.GetAttributeMenuWidgetController(self)
@@ -24,8 +24,8 @@ end
 
 function M:OnReceiveAttributeInfo(info)
     if UE.UBlueprintGameplayTagLibrary.MatchesTag(info.AttributeTag, self.AttributeTag, true) then
-        self:SetLableText(info.AttributeName)
-        self:SetNumericalValueFloat(info.AttributeValue)
+        self.Super.SetLableText(self, info.AttributeName)
+        self.Super.SetNumericalValueFloat(self, info.AttributeValue)
     end
 end
 
@@ -35,14 +35,6 @@ end
 
 function M:SetButtonEnabled(enable)
     self.WBP_Button.Button:SetIsEnabled(enable)
-end
-
-function M:SetLableText(text)
-    self.TextBlock_Label:SetText(text)
-end
-
-function M:SetNumericalValueFloat(value)
-    self.WBP_FramedValue.TextBlock_Value:SetText(UE.UKismetTextLibrary.Conv_DoubleToText(value, 0, false, true, 1, 324, 0, 2))
 end
 
 return M
