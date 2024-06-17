@@ -22,7 +22,7 @@ end
 
 function M:OnReceiveAttributeInfo(info)
     if UE.UBlueprintGameplayTagLibrary.MatchesTag(info.AttributeTag, self.AttributeTag, true) then
-        self.SetLableText(self, info.AttributeName)
+        self:SetLableText(info.AttributeName)
         self:SetNumericalValueFloat(info.AttributeValue)
     end
 end
