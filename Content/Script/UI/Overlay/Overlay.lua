@@ -9,18 +9,6 @@
 ---@type WBP_Overlay_C
 local M = UnLua.Class()
 
---function M:Initialize(Initializer)
---end
-
---function M:PreConstruct(IsDesignTime)
---end
-
--- function M:Construct()
--- end
-
---function M:Tick(MyGeometry, InDeltaTime)
---end
-
 function M:WidgetControllerSet()
     self.BPOverlayWidgetController = self.WidgetController:Cast(UE.UOverlayWidgetController)
     self.PlayerController = self.BPOverlayWidgetController.PlayerController
@@ -62,7 +50,7 @@ function M:OnAttributeMenuButtonClicked()
 
     local Position = UE.FVector2D(self.MenuPadding, self.MenuPadding)
     self.AttributeMenuWidget:SetPositionInViewport(Position)
-    self.AttributeMenuWidget.AttributeMenuClosed:Add(self, self.OnAttributeMenuClosed)  -- TODO: attributemenu delegate clear
+    self.AttributeMenuWidget.AttributeMenuClosed:Add(self, self.OnAttributeMenuClosed)
     UE.UWidgetBlueprintLibrary.SetInputMode_UIOnlyEx(self.PlayerController)
 end
 
