@@ -10,23 +10,34 @@
 local M = UnLua.Class()
 
 function M:Construct()
-    self.CloseButton.Button.OnClicked:Add(self, self.OnCloseButtonClicked)
     self:SetAttributeTags()
-    self.AttributeMenuWidgetController = UE.UAuraAbilitySystemLibrary.GetAttributeMenuWidgetController(self)
-    self:SetWidgetController(self.AttributeMenuWidgetController)
+
+    self.CloseButton.Button.OnClicked:Add(self, self.OnCloseButtonClicked)
+
+    self:SetAttributeMenuWidgetController()
+end
+
+function M:WidgetControllerSet()
     self.Row_AttributePoint:SetWidgetController(self.AttributeMenuWidgetController)
-    
+
     self.AttributeMenuWidgetController.OnAttributePointsChangedDelegate:Add(self, self.OnAttributePointsChanged);
+    
     self.AttributeMenuWidgetController:BroadcastInitialValues()
 end
 
 function M:Destruct()
     self.AttributeMenuWidgetController.OnAttributePointsChangedDelegate:Remove(self, self.OnAttributePointsChanged)
     self.CloseButton.Button.OnClicked:Remove(self, self.OnCloseButtonClicked)
+    
     self.AttributeMenuClosed:Broadcast()
     self.AttributeMenuClosed:Clear()
     
     self:Release()
+end
+
+function M:SetAttributeMenuWidgetController()
+    self.AttributeMenuWidgetController = UE.UAuraAbilitySystemLibrary.GetAttributeMenuWidgetController(self)
+    self:SetWidgetController(self.AttributeMenuWidgetController)
 end
 
 function M:OnCloseButtonClicked()
