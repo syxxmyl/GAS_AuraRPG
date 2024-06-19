@@ -10,15 +10,15 @@
 local M = UnLua.Class()
 
 function M:WidgetControllerSet()
-    self.BPOverlayWidgetController = self.WidgetController:Cast(UE.UOverlayWidgetController)
-    self.PlayerController = self.BPOverlayWidgetController.PlayerController
+    self.OverlayWidgetController = self.WidgetController:Cast(UE.UOverlayWidgetController)
+    self.PlayerController = self.OverlayWidgetController.PlayerController
 
     self.WBP_HealthManaSpells:SetWidgetController(self.WidgetController)
     self.WBP_XPBar:SetWidgetController(self.WidgetController)
     self.ValueGlobe_Level:SetWidgetController(self.WidgetController)
 
-    self.BPOverlayWidgetController.MessageWidgetRowDelegate:Add(self, self.OnReceiveMessageWidgetRowBroadcast)
-    self.BPOverlayWidgetController.OnPlayerLevelChangedDelegate:Add(self, self.OnReceivePlayerLevelChangedBroadcast)
+    self.OverlayWidgetController.MessageWidgetRowDelegate:Add(self, self.OnReceiveMessageWidgetRowBroadcast)
+    self.OverlayWidgetController.OnPlayerLevelChangedDelegate:Add(self, self.OnReceivePlayerLevelChangedBroadcast)
 end
 
 function M:Construct()
@@ -28,8 +28,8 @@ function M:Construct()
 end
 
 function M:Destruct()
-    self.BPOverlayWidgetController.MessageWidgetRowDelegate:Remove(self, self.OnReceiveMessageWidgetRowBroadcast)
-    self.BPOverlayWidgetController.OnPlayerLevelChangedDelegate:Remove(self, self.OnReceivePlayerLevelChangedBroadcast)
+    self.OverlayWidgetController.MessageWidgetRowDelegate:Remove(self, self.OnReceiveMessageWidgetRowBroadcast)
+    self.OverlayWidgetController.OnPlayerLevelChangedDelegate:Remove(self, self.OnReceivePlayerLevelChangedBroadcast)
     self.AttributeMenuButton.Button.OnClicked:Remove(self, self.OnAttributeMenuButtonClicked)
     self.SpellMenuButton.Button.OnClicked:Remove(self, self.OnSpellMenuButtonClicked)
     self.Button_Quit.Button.OnClicked:Remove(self, self.OnQuitButtonClicked)
