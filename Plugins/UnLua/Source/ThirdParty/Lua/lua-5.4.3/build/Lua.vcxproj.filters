@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lauxlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lbaselib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lcode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lcorolib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lctype.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ldblib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ldebug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ldo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ldump.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lfunc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lgc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\linit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\liolib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\llex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lmathlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lmem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\loadlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lobject.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lopcodes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\loslib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lparser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lstate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lstring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lstrlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ltable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ltablib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ltests.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\ltm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lua.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lundump.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lutf8lib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lvm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\lua-5.4.3\src\lzio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Unreal Projects\GAS_AuraRPG\GAS_AuraRPG\Plugins\UnLua\Source\ThirdParty\Lua\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3B78E2F2-A88B-3D63-9F2D-A3262C56CA41}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
